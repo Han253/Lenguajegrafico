@@ -1,0 +1,41 @@
+grammar org.uis.lenguajegrafico.Lenguajegrafico with org.eclipse.xtext.common.Terminals
+
+generate lenguajegrafico "http://www.uis.org/lenguajegrafico/Lenguajegrafico"
+
+Lenguajegrafico:
+	(elements+=Elemento)* ;
+
+Elemento:
+    TipoDato | Grafico | Dato ;
+
+TipoDato:
+	'tipoDato' name=ID ;
+
+Grafico:
+	GraficoTorta | GraficoCartesiano
+;
+
+GraficoTorta:
+	'graficoTorta' name= ID '{'
+	   (features+=Atributo)*
+	 '}'
+;
+
+GraficoCartesiano:
+	'graficoCartesiano' name=ID '{'
+	    (features+=Atributo)*
+	 '}'
+;
+
+Dato:
+	'dato' name=ID '{'
+	  (features+=Atributo)*
+	'}'
+;
+
+Atributo:
+	(many?='many')? name=ID ':' type=[Elemento];
+
+
+
+

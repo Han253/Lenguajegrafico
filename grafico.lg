@@ -1,0 +1,28 @@
+
+// El tipo de dato para cada atributo
+tipoDato String
+tipoDato Double
+
+
+//Descripción de un gráfico de torta 
+graficoTorta graficoUno {
+	titulo:String
+	many datos:Dato		
+}
+
+
+//Descripción de un grafico Cartesiano
+graficoCartesiano graficoDos{
+	titulo:String
+	tituloEjeX:String
+	tituloEjeY:String
+	many datos:Dato
+}
+
+
+//Descripción de la forma de los datos
+dato Dato{
+	etiqueta:String
+	valor: Double
+}
+
