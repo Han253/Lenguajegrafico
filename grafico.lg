@@ -4,14 +4,14 @@ tipoDato String
 tipoDato Double
 
 
-//Descripci�n de un gr�fico de torta 
+//Descripción de un gráfico de torta 
 graficoTorta graficoUno {
 	titulo:String
 	many datos:Dato		
 }
 
 
-//Descripci�n de un grafico Cartesiano
+//Descripción de un gráfico Cartesiano
 graficoCartesiano graficoDos{
 	titulo:String
 	tituloEjeX:String
@@ -20,7 +20,7 @@ graficoCartesiano graficoDos{
 }
 
 
-//Descripci�n de la forma de los datos
+//Descripción de la forma de los datos
 dato Dato{
 	etiqueta:String
 	valor: Double
