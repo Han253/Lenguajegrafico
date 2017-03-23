@@ -1,33 +1,54 @@
+//Pie chart one description
+PieChart pieChartOne {
+	String title
+	dataOne
+}
 
-// El tipo de dato para cada atributo
-tipoDato String
-tipoDato Double
+//Line chart one description
+LineChart lineChartOne{
+	String title
+	String titleAxisX
+	String titleAxisY
+	dataTwo
+}
 
+//bar chart one description
+BarChart barChartOne{
+	String title
+	dataTwo
+}
 
-//Descripción de un gráfico de torta 
-graficoTorta graficoUno {
-	titulo:String
-	many datos:DatoGraficoTorta	
+//Map chart one description
+Map mapChart{
+	String title
+	dataTree
+}
+
+//Tuple 1 description and origin data
+Tuple1 dataOne{
+	  String label="ColumnaEtiqueta"
+	  Double value="ColumnaValores"   
+}
+
+//Tuple 2 description and origin data
+Tuple2 dataTwo{
+	  Double value1="Valor1"
+	  Double value2="Valor2"   
+}
+
+//Tuple 3 description and origin data
+Tuple3 dataTree{
+	 Double X="latitude"
+	 Double y="longitude"
+	 String l="labels"
+}
+
+//DashBoard description
+DashBoard dashboard{
+	pieChartOne
+	lineChartOne
+	mapChart
 }
 
 
-//Descripción de un grafico Cartesiano
-graficoCartesiano graficoDos{
-	titulo:String
-	tituloEjeX:String
-	tituloEjeY:String
-	many datos:DatoGraficoCartesiano
-}
 
-
-//Descripción de la forma de los datos
-dato DatoGraficoTorta{
-	etiqueta:String
-	valor: Double
-}
-
-//Descripción de la forma de los datos
-dato DatoGraficoCartesiano{
-	ValorX:Double
-	ValorY:Double
-}
