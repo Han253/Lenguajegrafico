@@ -3,38 +3,92 @@ grammar org.uis.lenguajegrafico.Lenguajegrafico with org.eclipse.xtext.common.Te
 generate lenguajegrafico "http://www.uis.org/lenguajegrafico/Lenguajegrafico"
 
 Lenguajegrafico:
-	(elements+=Elemento)* ;
+	(elements+=Element)* ;
 
-Elemento:
-    TipoDato | Grafico | Dato ;
+Element:
+    Chart | Tuple | DashBoard;
 
-TipoDato:
-	'tipoDato' name=ID ;
-
-Grafico:
-	GraficoTorta | GraficoCartesiano
+enum DataType:
+	STRING='String' | DOUBLE='Double'| BOOLEAN='boolean'| DATE='date';
+	
+Label:
+	STRING='String' name=ID '=' value+=STRING
 ;
 
-GraficoTorta:
-	'graficoTorta' name= ID '{'
-	   (features+=Atributo)*
+Value:
+	DOUBLE="Double" name=ID '=' value+=STRING
+;
+
+Chart:
+	PieChart | LineChart | BarChart | Map
+;
+
+PieChart:
+	'PieChart' name= ID '{'
+	   (features+=Feature)*
+	   type+=[Tuple1]
 	 '}'
 ;
 
-GraficoCartesiano:
-	'graficoCartesiano' name=ID '{'
-	    (features+=Atributo)*
+BarChart:
+	'BarChart' name= ID '{'
+	   (features+=Feature)*
+	   type+=[Tuple2]
 	 '}'
 ;
 
-Dato:
-	'dato' name=ID '{'
-	  (features+=Atributo)*
+LineChart:
+	'LineChart' name=ID '{'
+	    (features+=Feature)*
+	    type+=[Tuple2]
+	 '}'
+;
+
+Map:
+	'Map' name =ID '{'
+		(fetures+=Feature)*
+		type =[Tuple3]
 	'}'
 ;
 
-Atributo:
-	(many?='many')? name=ID ':' type=[Elemento];
+
+Tuple:
+	Tuple1 | Tuple2	| Tuple3
+;
+
+Tuple1:
+	'Tuple1' name=ID '{'
+	     label=Label
+	     value=Value
+	'}'
+;
+
+Tuple2:
+	'Tuple2' name=ID '{'
+	     value1=Value
+	     value2=Value
+	'}'
+;
+
+Tuple3:
+	'Tuple3' name = ID '{'
+		latitude = Value
+		length = Value
+		label = Label
+	'}'
+;
+
+Feature:
+	datatype=DataType name=ID;
+	
+	
+DashBoard:
+	'DashBoard' name=ID '{'
+	   (type+=[Chart])*
+	'}'
+;
+	
+
 
 
 
