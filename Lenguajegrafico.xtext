@@ -20,7 +20,7 @@ Value:
 ;
 
 Chart:
-	PieChart | LineChart | BarChart | Map
+	PieChart | LineChart | ColumnChart | Map
 ;
 
 PieChart:
@@ -30,8 +30,8 @@ PieChart:
 	 '}'
 ;
 
-BarChart:
-	'BarChart' name= ID '{'
+ColumnChart:
+	'ColumnChart' name= ID '{'
 	   (features+=Feature)*
 	   type+=[Tuple2]
 	 '}'

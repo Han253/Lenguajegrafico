@@ -13,8 +13,10 @@ LineChart lineChartOne{
 }
 
 //bar chart one description
-BarChart barChartOne{
+ColumnChart barChartOne{
 	String title
+	String titleAxisX
+	String titleAxisY
 	dataTwo
 }
 
