@@ -73,7 +73,7 @@ Tuple2:
 Tuple3:
 	'Tuple3' name = ID '{'
 		latitude = Value
-		length = Value
+		longitude = Value
 		label = Label
 	'}'
 ;
