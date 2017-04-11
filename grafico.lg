@@ -1,6 +1,6 @@
 //Pie chart one description
 PieChart pieChartOne {
-	String title
+	String title="TituloGenial"
 	dataOne
 }
 
@@ -13,8 +13,8 @@ LineChart lineChartOne{
 }
 
 //bar chart one description
-ColumnChart barChartOne{
-	String title
+ColumnChart columnChartOne{
+	String title="TitleLOL"
 	String titleAxisX
 	String titleAxisY
 	dataTwo
