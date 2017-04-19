@@ -1,0 +1,25 @@
+<html>
+  <head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.charts.load("current", {packages:["map"]});
+      google.charts.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Lat', 'Long', 'Name'],
+          [7.141024, -73.122823, 'Oficina_Profesor'],
+          [7.133638, -73.119803, 'Sena'],
+          [7.128146, -73.114101, 'Hopital_Universitario']
+        ]);
+        var mapChart = new google.visualization.Map(document.getElementById('map_div'));
+        mapChart.draw(data, {showTip: true})
+      }
+
+    </script>
+  </head>
+
+  <body>
+    <div id="map_div" style="width: 800px; height: 600px"></div>
+  </body>
+</html>

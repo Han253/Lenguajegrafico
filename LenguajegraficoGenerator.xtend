@@ -12,6 +12,8 @@ import javax.inject.Inject
 import org.uis.lenguajegrafico.lenguajegrafico.PieChart
 import org.uis.lenguajegrafico.lenguajegrafico.ColumnChart
 import org.uis.lenguajegrafico.lenguajegrafico.Feature
+import org.uis.lenguajegrafico.lenguajegrafico.Map
+import org.uis.lenguajegrafico.lenguajegrafico.LineChart
 
 /**
  * Generates code from your model files on save.
@@ -30,6 +32,17 @@ class LenguajegraficoGenerator extends AbstractGenerator {
          }
          
          for(e : resource.allContents.toIterable.filter(ColumnChart)){
+         	 fsa.generateFile(
+             	 	e.fullyQualifiedName.toString("/")+".html",
+             	 	e.compile)   
+         }
+         
+         for(e : resource.allContents.toIterable.filter(Map)){
+         	 fsa.generateFile(
+             	 	e.fullyQualifiedName.toString("/")+".html",
+             	 	e.compile)   
+         }
+         for(e : resource.allContents.toIterable.filter(LineChart)){
          	 fsa.generateFile(
              	 	e.fullyQualifiedName.toString("/")+".html",
              	 	e.compile)   
@@ -149,5 +162,72 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	    	        	         };
 	     «ENDIF»	
 	'''
+	def compile(Map e)'''
+	<html>
+	  <head>
+	    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+	    <script type="text/javascript">
+	      google.charts.load("current", {packages:["map"]});
+	      google.charts.setOnLoadCallback(drawChart);
+	      function drawChart() {
+	        var data = google.visualization.arrayToDataTable([
+	          ['Lat', 'Long', 'Name'],
+	          [7.141024, -73.122823, 'Oficina_Profesor'],
+	          [7.133638, -73.119803, 'Sena'],
+	          [7.128146, -73.114101, 'Hopital_Universitario']
+	        ]);
+	        var «e.name» = new google.visualization.Map(document.getElementById('map_div'));
+	        «e.name».draw(data, {showTip: true})
+	      }
 	
+	    </script>
+	  </head>
+	
+	  <body>
+	    <div id="map_div" style="width: 800px; height: 600px"></div>
+	  </body>
+	</html>
+	'''
+	
+	def compile(LineChart e)'''
+	 <html>
+	   <head>
+	     <!--Load the AJAX API-->
+	      <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	      <script type="text/javascript">
+	       google.charts.load('current', {'packages':['corechart']});
+	       google.charts.setOnLoadCallback(drawChart);
+	 
+	       function drawChart() {
+	         var data = google.visualization.arrayToDataTable([
+	           ['Year', 'Sales', 'Expenses'],
+	           ['2004',  1000,      400],
+	           ['2005',  1170,      460],
+	           ['2006',  660,       1120],
+	           ['2007',  1030,      540]
+	         ]);
+	                          «FOR f:e.features»	
+	                            	«f.compilePieChart»
+	                          «ENDFOR»                           
+	                          	                  
+	                          // Instantiate and draw our chart, passing in some options.
+	                          var «e.name» = new google.visualization.LineChart(document.getElementById('curve_chart'));
+	                          «e.name».draw(data, options);
+	                   }                 
+	           </script>
+	           
+	       </head>
+	       <body>
+	           <div id="curve_chart" style="width: 900px; height: 500px"></div>
+	         </body>
+	       </html>
+	'''
+	def compileLineChart(Feature f) '''
+	    «IF f.name == 'title'»
+	    	        var options = {'title':'«f.value»',
+	    	        	            curveType: 'function',
+	    	        	            legend: { position: 'bottom' }};
+	     «ENDIF»	
+	'''
 }

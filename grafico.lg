@@ -6,7 +6,7 @@ PieChart pieChartOne {
 
 //Line chart one description
 LineChart lineChartOne{
-	String title
+	String title="TituloLine"
 	String titleAxisX
 	String titleAxisY
 	dataTwo
@@ -22,7 +22,7 @@ ColumnChart columnChartOne{
 
 //Map chart one description
 Map mapChart{
-	String title
+	String title="TituloMapa"
 	dataTree
 }
 
