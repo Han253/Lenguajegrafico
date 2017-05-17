@@ -14,4 +14,10 @@ Archivo de prueba donde se han definido los tipos de graficos existentes y se pu
 ### sampleData.json
 Archivo json que contiene los datos que toma el servidor para dar respuesta a las peticiones. 
 
-
+### Prototipo 1.0 Terminado
+Se añaden las siguientes características: 
+- Los datos se obtienen desde un web services que los envía en formato JSON mediante la librería JQuery de JavaScript en los archivos generados. 
+- se configura el script para asignar los datos en la forma que la librería GoogleChart los requiere para cada tipo de gráfico definido. 
+- Se puede configurar la URL de los datos desde las Tuplas de datos que contienen el nombre de las características o se asigna una ruta por defecto. 
+-Se añade la característica Titulo de forma explicita para cada gráfico, esta característica es opcional y en caso de no ser definida se asigna un valor por defecto.  
+- ser genera un archivo properties.js donde se encuentra la configuración de URL´s definidas por el usuario.
