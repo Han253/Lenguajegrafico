@@ -1,0 +1,38 @@
+<html>
+   <head>
+       <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+       <script src="properties.js"></script>
+        <script type="text/javascript">
+              google.charts.load('current', {'packages':['corechart']});
+              google.charts.setOnLoadCallback(drawChart);
+              
+               function drawChart() {
+              
+                      // Data table 
+                       var data = new google.visualization.DataTable();
+                       data.addColumn('string', 'nombre');
+                       data.addColumn('number', 'valor1');
+                      
+                       $.getJSON(urlServerDefaul
+                       , function(response){
+                           for(var i in response){
+                               data.addRows([[response[i]["nombre"],response[i]["valor1"]]]);
+                           }
+                        	                                      
+                           var options = {'title':'Titulo grafico de torta'
+                           ,'width':400
+                           ,'height':300};
+                      
+                           // Instantiate and draw our chart, passing in some options.
+                           var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+                           chart.draw(data, options);       
+                           }); //END getJSON
+                 }               
+       </script>
+       
+   </head>
+   <body>
+     <div id="chart_div"></div>
+   </body>
+</html>
