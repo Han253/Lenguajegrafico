@@ -1,48 +1,49 @@
+
 //Pie chart one description
 PieChart pieChartOne {
-	String title="TituloGenial"
+	Title String title="Titulo grafico de torta"
 	dataOne
-}
-
-//Line chart one description
-LineChart lineChartOne{
-	String title="TituloLine"
-	String titleAxisX
-	String titleAxisY
-	dataTwo
 }
 
 //bar chart one description
 ColumnChart columnChartOne{
-	String title="TitleLOL"
-	String titleAxisX
-	String titleAxisY
+	Title String title="Valores Relacionados"
 	dataTwo
 }
 
+
+//Line chart one description
+LineChart lineChartOne{
+	Title String title="Valores Relacionados grafico Linea"
+	dataTwo
+}
+
+
+
 //Map chart one description
 Map mapChart{
-	String title="TituloMapa"
+	Title String title="TituloMapa"
 	dataTree
 }
 
 //Tuple 1 description and origin data
 Tuple1 dataOne{
-	  String label="ColumnaEtiqueta"
-	  Double value="ColumnaValores"   
+	  String nombre
+	  String valor1  
 }
 
 //Tuple 2 description and origin data
 Tuple2 dataTwo{
-	  Double value1="Valor1"
-	  Double value2="Valor2"   
+	  String valor1
+	  String valor2
 }
 
 //Tuple 3 description and origin data
 Tuple3 dataTree{
-	 Double X="latitude"
-	 Double y="longitude"
-	 String l="labels"
+	URL coordenadas="http://192.168.100.13:8080/coordenadas"	
+	String latitud
+	String longitud
+	String nombre
 }
 
 //DashBoard description

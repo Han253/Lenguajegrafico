@@ -1,0 +1,48 @@
+{
+    "paises":[
+        {
+            "id":0,
+            "nombre":"Colombia",
+            "valor1":10,
+            "valor2":20
+        },
+        {
+            "id":1,
+            "nombre":"Venezuela",
+            "valor1":5,
+            "valor2":10
+        },
+        {
+            "id":2,
+            "nombre":"Chile",
+            "valor1":11,
+            "valor2":22
+        },
+        {
+            "id":3,
+            "nombre":"Argentina",
+            "valor1":12,
+            "valor2":24
+        }
+      ],
+    
+    "coordenadas":[
+        {
+            "latitud":7.141024,
+            "longitud":-73.122823,
+            "nombre":"Oficina Profesor"
+        },
+        {
+            "latitud":7.133638,
+            "longitud":-73.119803,
+            "nombre":"Sena"
+        },
+        {
+            "latitud":7.128146,
+            "longitud":-73.114101,
+            "nombre":"Hospital Universitario"
+        }
+    
+    ]
+
+}

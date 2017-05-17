@@ -6,18 +6,30 @@ Lenguajegrafico:
 	(elements+=Element)* ;
 
 Element:
-    Chart | Tuple | DashBoard;
+    Chart | Tuple | DashBoard | Datatype;
 
-enum DataType:
-	STRING='String' | DOUBLE='Double'| BOOLEAN='boolean'| DATE='date';
-	
-Label:
-	STRING='String' name=ID '=' value+=STRING
+Datatype:
+	Text | Number | URL
 ;
 
-Value:
-	DOUBLE="Double" name=ID '=' value+=STRING
+//DataType
+terminal DOUBLE:INT('.' INT)?;
+terminal BOOLEAN:('TRUE'|'FALSE');
+terminal DATE:(STRING'-'STRING'-'STRING);
+
+Text:
+	'String' name= ID ('=' value=STRING)?
 ;
+
+Number:
+	'number' name= ID ('=' value=DOUBLE)?
+;
+
+URL:
+	'URL' name=ID '=' value=STRING
+;
+
+
 
 Chart:
 	PieChart | LineChart | ColumnChart | Map
@@ -25,29 +37,29 @@ Chart:
 
 PieChart:
 	'PieChart' name= ID '{'
-	   (features+=Feature)*
-	   type+=[Tuple1]
+	   ('Title' title=Text)?
+	   (tuple=[Tuple1])
 	 '}'
 ;
 
 ColumnChart:
 	'ColumnChart' name= ID '{'
-	   (features+=Feature)*
-	   type+=[Tuple2]
+	   ('Title' title=Text)?
+	   (tuple=[Tuple2])
 	 '}'
 ;
 
 LineChart:
 	'LineChart' name=ID '{'
-	    (features+=Feature)*
-	    type+=[Tuple2]
+	    ('Title' title=Text)?
+	    (tuple=[Tuple2])
 	 '}'
 ;
 
 Map:
 	'Map' name =ID '{'
-		(fetures+=Feature)*
-		type =[Tuple3]
+		('Title' title=Text)?
+		(tuple=[Tuple3])
 	'}'
 ;
 
@@ -58,28 +70,29 @@ Tuple:
 
 Tuple1:
 	'Tuple1' name=ID '{'
-	     label=Label
-	     value=Value
+	     (url=URL)?
+	     (label=Text)
+	     (value=Text)
 	'}'
 ;
 
 Tuple2:
 	'Tuple2' name=ID '{'
-	     value1=Value
-	     value2=Value
+	     (url=URL)?
+	     (value1=Text)
+	     (value2=Text)
 	'}'
 ;
 
 Tuple3:
 	'Tuple3' name = ID '{'
-		latitude = Value
-		longitude = Value
-		label = Label
+	    (url=URL)?
+		(value1=Text)
+		(value2=Text)
+		(value3=Text)
 	'}'
 ;
 
-Feature:
-	datatype=DataType name=ID ('=' value=STRING)?;
 	
 	
 DashBoard:
