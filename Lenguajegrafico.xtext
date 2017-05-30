@@ -32,7 +32,7 @@ URL:
 
 
 Chart:
-	PieChart | LineChart | ColumnChart | Map
+	PieChart | LineChart | BarChart | Map
 ;
 
 PieChart:
@@ -42,8 +42,8 @@ PieChart:
 	 '}'
 ;
 
-ColumnChart:
-	'ColumnChart' name= ID '{'
+BarChart:
+	'BarChart' name= ID '{'
 	   ('Title' title=Text)?
 	   (tuple=[Tuple2])
 	 '}'
@@ -100,7 +100,8 @@ DashBoard:
 	   (type+=[Chart])*
 	'}'
 ;
-	
+
+
 
 
 

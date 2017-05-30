@@ -10,11 +10,13 @@ import org.eclipse.xtext.generator.IGeneratorContext
 import org.eclipse.xtext.naming.IQualifiedNameProvider
 import javax.inject.Inject
 import org.uis.lenguajegrafico.lenguajegrafico.PieChart
-import org.uis.lenguajegrafico.lenguajegrafico.ColumnChart
+import org.uis.lenguajegrafico.lenguajegrafico.BarChart
 import org.uis.lenguajegrafico.lenguajegrafico.Map
 import org.uis.lenguajegrafico.lenguajegrafico.LineChart
 import org.uis.lenguajegrafico.lenguajegrafico.Text
 import org.uis.lenguajegrafico.lenguajegrafico.URL
+import org.uis.lenguajegrafico.lenguajegrafico.DashBoard
+
 /**
  * Generates code from your model files on save.
  * 
@@ -33,197 +35,372 @@ class LenguajegraficoGenerator extends AbstractGenerator {
          }
          
          //Generate properties file, in this file you configure the URL for the Web Service
-		 fsa.generateFile("properties.js",URLvalue);
+		 fsa.generateFile("/Web/js/properties.js",URLvalue);
 		 
 		
 		 
          for(e : resource.allContents.toIterable.filter(PieChart)){
-         	 fsa.generateFile(
+         	 fsa.generateFile("/Web/"+
              	 	e.fullyQualifiedName.toString("/")+".html",
-             	 	e.compile)   
+             	 	e.generateHTML)   
+             fsa.generateFile("/Web/js/"+
+             	 	e.fullyQualifiedName.toString("/")+".js",
+             	 	e.generateJS)
+             fsa.generateFile("/python/"+
+             	 	e.fullyQualifiedName.toString("/")+".py",
+             	 	e.generatePy)
          }
          
-         for(e : resource.allContents.toIterable.filter(ColumnChart)){
-         	 fsa.generateFile(
+         for(e : resource.allContents.toIterable.filter(BarChart)){
+         	 fsa.generateFile("/Web/"+
              	 	e.fullyQualifiedName.toString("/")+".html",
-             	 	e.compile)   
+             	 	e.generateHTML)   
+             fsa.generateFile("/Web/js/"+
+             	 	e.fullyQualifiedName.toString("/")+".js",
+             	 	e.generateJS)
+             fsa.generateFile("/python/"+
+             	 	e.fullyQualifiedName.toString("/")+".py",
+             	 	e.generatePy)
          }
+         
+         for(e : resource.allContents.toIterable.filter(LineChart)){
+         	 fsa.generateFile("/Web/"+
+             	 	e.fullyQualifiedName.toString("/")+".html",
+             	 	e.generateHTML)   
+             fsa.generateFile("/Web/js/"+
+             	 	e.fullyQualifiedName.toString("/")+".js",
+             	 	e.generateJS)
+             fsa.generateFile("/python/"+
+             	 	e.fullyQualifiedName.toString("/")+".py",
+             	 	e.generatePy)   
+         }
+         
          
          for(e : resource.allContents.toIterable.filter(Map)){
-         	 fsa.generateFile(
+         	fsa.generateFile("/Web/"+
              	 	e.fullyQualifiedName.toString("/")+".html",
-             	 	e.compile)   
+             	 	e.generateHTML)   
+            fsa.generateFile("/Web/js/"+
+             	 	e.fullyQualifiedName.toString("/")+".js",
+             	 	e.generateJS)
+            fsa.generateFile("/python/"+
+             	 	e.fullyQualifiedName.toString("/")+".py",
+             	 	e.generatePy)              
          }
-         for(e : resource.allContents.toIterable.filter(LineChart)){
-         	 fsa.generateFile(
+         
+         
+          for(e : resource.allContents.toIterable.filter(DashBoard)){
+         	 fsa.generateFile("/Web/"+
              	 	e.fullyQualifiedName.toString("/")+".html",
-             	 	e.compile)   
+             	 	e.compileHTML)
          }
+         
 	 }
 	 
 	
 	 
-	 
-	 def compile(PieChart e)'''
+	 /* this is the method to generate Html file in a "default_location/web" folder.
+	  * e is the Pie Chart Object with contain information from Metamodel to generate file.
+	  */
+	 def generateHTML(PieChart e)'''
 	    <html>
 	       <head>
 	           <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 	           <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	           <script src="properties.js"></script>
-	            <script type="text/javascript">
-	                  google.charts.load('current', {'packages':['corechart']});
-	                  google.charts.setOnLoadCallback(drawChart);
-	                  
-	                   function drawChart() {
-	                  
-	                          // Data table 
-	                           var data = new google.visualization.DataTable();
-	                           data.addColumn('string', '«e.tuple.label.name»');
-	                           data.addColumn('number', '«e.tuple.value.name»');
-	                          
-	                           $.getJSON(«e.tuple.url.getURL», function(response){
-	                               for(var i in response){
-	                                   data.addRows([[response[i]["«e.tuple.label.name»"],response[i]["«e.tuple.value.name»"]]]);
-	                               }
-	                            	                                      
-	                               var options = {'title':«e.title.getText»
-	                               ,'width':400
-	                               ,'height':300};
-	                          
-	                               // Instantiate and draw our chart, passing in some options.
-	                               var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
-	                               chart.draw(data, options);       
-	                               }); //END getJSON
-	                     }               
-	           </script>
-	           
+	           <script src="js/properties.js"></script>
+	           <script src="js/«e.name».js"></script>
 	       </head>
 	       <body>
-	         <div id="chart_div"></div>
+	         <div id="«e.name»"></div>
 	       </body>
 	    </html>
 	'''
-		
 	
-	def compile(ColumnChart e)'''
+	
+	 /* this is the method to generate JavaScript file in a default_location/web/js folder.
+	  * e is the Pie Chart Object with contain information from Metamodel to generate file.
+	  */
+	def generateJS(PieChart e)'''
+		google.charts.load('current', {'packages':['corechart']});
+		google.charts.setOnLoadCallback(drawChart);
+					                  
+		function drawChart() {
+				// Data table 
+				var data = new google.visualization.DataTable();
+				data.addColumn('string', '«e.tuple.label.name»');
+				data.addColumn('number', '«e.tuple.value.name»');
+					                          
+				$.getJSON(«e.tuple.url.getURL», function(response){
+					      for(var i in response){
+					              data.addRows([[response[i]["«e.tuple.label.name»"],response[i]["«e.tuple.value.name»"]]]);
+					      }
+					                            	                                      
+					       var options = {'title':«e.title.getText»
+					       ,'width':400
+					       ,'height':300};
+					                          
+				// Instantiate and draw our chart, passing in some options.
+				var chart = new google.visualization.PieChart(document.getElementById('«e.name»'));
+				chart.draw(data, options);       
+				}); //END getJSON
+		}          
+	'''
+	
+	def generatePy(PieChart e)'''
+	"""
+	Pie Chart Code generated - this code es generated based on DSL.
+	
+	Autor: Henry Jimenez - Maria Fernanda Guerrero
+	Version: 24/05/2017
+	
+	"""
+	
+	from urllib.request import urlopen
+	import matplotlib.pyplot as plt
+	import json
+	
+	«e.tuple.label.name»=[]
+	«e.tuple.value.name»=[]
+	
+	URL="«e.tuple.url.getURLforPython»"
+	response=json.load(urlopen(URL))
+	for i in response:
+	    «e.tuple.label.name».append(i["«e.tuple.label.name»"])
+	    «e.tuple.value.name».append(i["«e.tuple.value.name»"])
+	
+	fig, ax = plt.subplots()
+	ax.pie(«e.tuple.value.name», labels=«e.tuple.label.name», autopct='%1.1f%%')
+	ax.set_title(«e.title.getText»)
+	ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+	plt.show()  
+	
+	'''
+	
+	def generateHTML(BarChart e)'''
 	   <html>
 	     <head>
 	       <!--Load the AJAX API-->
 	        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 	        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	        <script src="properties.js"></script>
-	        <script type="text/javascript">
-	        
-	        google.charts.load('current', {packages: ['corechart', 'bar']});
-	   google.charts.setOnLoadCallback(drawBasic);
-	   
-	   function drawBasic() {
-	   
-	         var data = new google.visualization.DataTable();
-	         data.addColumn('number', '«e.tuple.value1.name»');
-	         data.addColumn('number', '«e.tuple.value2.name»');
-	                               
-	         $.getJSON(«e.tuple.url.getURL», function(response){
-	                   for(var i in response){
-	                       data.addRows([[response[i]["«e.tuple.value1.name»"],response[i]["«e.tuple.value2.name»"]]]);
-	                   }
-	                                                                         
-	                   var options = {'title':«e.title.getText»,'width':400,'height':400};
-	                   
-	                   var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
-	                   chart.draw(data, options);       
-	                   }); //END getJSON
-	       }
-	       </script>
+	        <script src="js/properties.js"></script>
+	        <script src="js/«e.name».js"></script>
 	     </head>
 	   
 	     <body>
 	       <!--Div that will hold the pie chart-->
-	       <div id="chart_div"></div>
+	       <div id="«e.name»"></div>
 	     </body>
 	   </html>
 	'''
+	def generateJS(BarChart e)'''
+			google.charts.load('current', {packages: ['corechart', 'bar']});
+			google.charts.setOnLoadCallback(drawBasic);
+				   
+			function drawBasic() {
+				   
+				   var data = new google.visualization.DataTable();
+				   data.addColumn('number', '«e.tuple.value1.name»');
+				   data.addColumn('number', '«e.tuple.value2.name»');
+				                               
+				   $.getJSON(«e.tuple.url.getURL», function(response){
+				             for(var i in response){
+				                 data.addRows([[response[i]["«e.tuple.value1.name»"],response[i]["«e.tuple.value2.name»"]]]);
+				             }
+				                                                                         
+				              var options = {'title':«e.title.getText»,'width':400,'height':400};
+				                   
+				              var chart = new google.visualization.ColumnChart(document.getElementById('«e.name»'));
+				              chart.draw(data, options);       
+				              }); //END getJSON
+			}
+	'''
+	def generatePy(BarChart e)'''
+	"""
+	Column Chart Code generated - this code es generated based on DSL.
+	
+	Autor: Henry Jimenez - Maria Fernanda Guerrero
+	Version: 24/05/2017
+	"""
+	
+	«e.tuple.value1.name»=[]
+	«e.tuple.value2.name»=[]
+	
+	URL="«e.tuple.url.getURLforPython»"
+	response=json.load(urlopen(URL))
+	for i in response:
+		«e.tuple.value1.name».append(i["«e.tuple.value1.name»"])
+		«e.tuple.value2.name».append(i["«e.tuple.value2.name»"])
+	
+	fig, ax = plt.subplots()
+	ax.plot(«e.tuple.value1.name»,«e.tuple.value2.name»)
+	ax.set_title(«e.title.getText»)
+	plt.show()
+	
+	'''
 		
-	def compile(LineChart e)'''
+	def generateHTML(LineChart e)'''
 	 <html>
 	   <head>
 	     <!--Load the AJAX API-->
 	      <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 	      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	      <script src="properties.js"></script>
-	      <script type="text/javascript">
-	       google.charts.load('current', {'packages':['corechart']});
-	       google.charts.setOnLoadCallback(drawChart);
-	 
-	       function drawChart() {
-	          	var data = new google.visualization.DataTable();
-	          	data.addColumn('number', '«e.tuple.value1.name»');
-	         	data.addColumn('number', '«e.tuple.value2.name»');
-	            
-	            
-	            $.getJSON(«e.tuple.url.getURL», function(response){
-	            	                   for(var i in response){
-	            	                       data.addRows([[response[i]["«e.tuple.value1.name»"],response[i]["«e.tuple.value2.name»"]]]);
-	            	                   }
-	            	                                                                         
-	            	                   var options = {'title':«e.title.getText»,'width':400,'height':400};
-	            	                   
-	            	                   var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-	            	                   chart.draw(data, options);       
-	            	                   }); //END getJSON
-	            	       }                 
-	           </script>
-	           
-	       </head>
-	       <body>
-	           <div id="chart_div"></div>
+	      <script src="js/properties.js"></script>
+	      <script src="js/«e.name».js"></script>  
+	      </head>
+	      <body>
+	         <div id="«e.name»"></div>
 	         </body>
-	       </html>
+	      </html>
 	'''	
+	def generateJS(LineChart e)'''
+		 google.charts.load('current', {'packages':['corechart']});
+		 google.charts.setOnLoadCallback(drawChart);
+		 
+		 function drawChart() {
+		         var data = new google.visualization.DataTable();
+		         data.addColumn('number', '«e.tuple.value1.name»');
+		         data.addColumn('number', '«e.tuple.value2.name»');
+		            
+		         $.getJSON(«e.tuple.url.getURL», function(response){
+		            	  for(var i in response){
+		            	      data.addRows([[response[i]["«e.tuple.value1.name»"],response[i]["«e.tuple.value2.name»"]]]);
+		            	  }
+		            	  var options = {'title':«e.title.getText»,'width':400,'height':400};
+		            	  var chart = new google.visualization.LineChart(document.getElementById('«e.name»'));
+		            	  chart.draw(data, options);       
+		            	   }); //END getJSON
+		 }  
+	'''
+	def generatePy(LineChart e)'''
+	"""
+	Line Chart Code generated - this code es generated based on DSL.
 	
-	def compile(Map e)'''
+	Autor: Henry Jimenez - Maria Fernanda Guerrero
+	Version: 24/05/2017
+	"""
+	
+	«e.tuple.value1.name»=[]
+	«e.tuple.value2.name»=[]
+	
+	URL="«e.tuple.url.getURLforPython»"
+	response=json.load(urlopen(URL))
+	for i in response:
+		«e.tuple.value1.name».append(i["«e.tuple.value1.name»"])
+		«e.tuple.value2.name».append(i["«e.tuple.value2.name»"])
+	
+	fig, ax = plt.subplots()
+	ax.bar(«e.tuple.value1.name»,«e.tuple.value2.name»)
+	ax.set_title(«e.title.getText»)
+	plt.show()
+	
+	'''
+	
+	
+	
+	def generateHTML(Map e)'''
 	<html>
 	  <head>
 	    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	   	<script src="properties.js"></script>
-	    <script type="text/javascript">
-	      google.charts.load("current", {packages:["map"]});
-	      google.charts.setOnLoadCallback(drawChart);
-	      
-	      
-	      function drawChart() {
-	      	
-	      	var data = new google.visualization.DataTable();
-	      	data.addColumn('number', '«e.tuple.value1.name»');
-	      	data.addColumn('number', '«e.tuple.value2.name»');
-	      	data.addColumn('string', '«e.tuple.value3.name»');
-	      	
-	      	$.getJSON(«e.tuple.url.getURL», function(response){
-	      		 for(var i in response){
-	      		      data.addRows([[response[i]["«e.tuple.value1.name»"],response[i]["«e.tuple.value2.name»"],response[i]["«e.tuple.value3.name»"]]]);
-	      		 }
-	      		            	                                                                         
-	      		  var options = {'title':«e.title.getText»};
-	      		  var chart = new google.visualization.Map(document.getElementById('map_div'));
-	      		 chart.draw(data, options);       
-	      		}); //END getJSON	      	
-	      }
-	
-	    </script>
+	   	<script src="js/properties.js"></script>
+	   	<script src="js/«e.name».js"></script>
 	  </head>
 	
 	  <body>
-	    <div id="map_div" style="width: 800px; height: 600px"></div>
+	    <div id="«e.name»" style="width: 800px; height: 600px"></div>
 	  </body>
 	</html>
 	'''
+	def generateJS(Map e)'''
+	google.charts.load("current", {packages:["map"]});
+	google.charts.setOnLoadCallback(drawChart);
+		      
+	function drawChart() {
+		      	
+	var data = new google.visualization.DataTable();
+	data.addColumn('number', '«e.tuple.value1.name»');
+	data.addColumn('number', '«e.tuple.value2.name»');
+	data.addColumn('string', '«e.tuple.value3.name»');
+		      	
+	$.getJSON(«e.tuple.url.getURL», function(response){
+		      for(var i in response){
+		      	  data.addRows([[response[i]["«e.tuple.value1.name»"],response[i]["«e.tuple.value2.name»"],response[i]["«e.tuple.value3.name»"]]]);
+		      }
+		      var options = {'title':«e.title.getText»};
+		      var chart = new google.visualization.Map(document.getElementById('«e.name»'));
+		      chart.draw(data, options);       
+		      }); //END getJSON	      	
+	}
+	'''
 	
-	def getText(Text t)'''	
-	  «IF t !== null && t.value !== null»'«t.value»'«ELSE»'no defined'«ENDIF»
-	'''	
+	def generatePy(Map e)'''
+	"""
+	Map Chart Code generated - this code es generated based on DSL.
+		
+	Autor: Henry Jimenez - Maria Fernanda Guerrero
+	Version: 24/05/2017
+		
+	"""
+		
+	from __future__ import print_function
+	from __future__ import division
+	from urllib.request import urlopen
+	from PIL import Image
+	import numpy as np
+	import json
+	import requests
+		
+	def get_static_google_map(zoom=14, imgsize="500x500", imgformat="jpeg",maptype="hybrid", markers=None ):
+				    
+		baseURL  =  "http://maps.google.com/maps/api/staticmap?"
+		baseURL += "zoom=%i&" % zoom  # zoom 0 (all of the world scale ) to 22 (single buildings scale)
+		baseURL += "size=%s&" % (imgsize) 
+		baseURL += "format=%s&" % imgformat
+		baseURL += "maptype=%s&" % maptype  # roadmap, satellite, hybrid, terrain
+		if markers != None:
+			baseURL += markers
+		return baseURL
+		
+		
+	def save_imagen(StrMakers):
+		url = get_static_google_map(markers=StrMakers)
+		r = sesion.get(url)
+		f=open('%s.png' % FileName,'wb')
+		f.write(r.content)
+		f.close()
+		
+	FileName="«e.name»"
+	URL="«e.tuple.url.getURLforPython»"
+	respuesta=json.load(urlopen(URL))
+		
+	StrMakers = "markers=color:blue"
+	for r in respuesta:
+		StrMakers += "|%s" % str(r["«e.tuple.value1.name»"])+","+str(r["«e.tuple.value2.name»"])
+		    
+		
+	sesion = requests.Session()
+		
+	save_imagen(StrMakers)
+	imagen = Image.open('%s.png' % FileName)
+	imagen
+	'''
 	
-	def getURL(URL t)'''	
-	  «IF t !== null && t.value !== null»«t.name»«ELSE»urlServerDefaul«ENDIF»
-	'''	
+	def compileHTML(DashBoard e)'''
+	  <html>
+	  <head>
+	  	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	  	<script src="js/properties.js"></script>	  	
+	  </head>
+	  <body>
+	    
+	  </body>
+	  </html>
+	'''
+	
+	def getText(Text t)'''«IF t !== null && t.value !== null»'«t.value»'«ELSE»'no defined'«ENDIF»'''
+	
+	def getURLforPython(URL u)'''«IF u !== null && u.value !== null»«u.value»«ELSE»http://192.168.100.13:8080/paises«ENDIF»'''	
+	
+	def getURL(URL t)'''«IF t !== null && t.value !== null»«t.name»«ELSE»urlServerDefaul«ENDIF»'''	
 }
