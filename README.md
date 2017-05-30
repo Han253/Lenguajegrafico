@@ -21,3 +21,10 @@ Se añaden las siguientes características:
 - Se puede configurar la URL de los datos desde las Tuplas de datos que contienen el nombre de las características o se asigna una ruta por defecto. 
 -Se añade la característica Titulo de forma explicita para cada gráfico, esta característica es opcional y en caso de no ser definida se asigna un valor por defecto.  
 - ser genera un archivo properties.js donde se encuentra la configuración de URL´s definidas por el usuario.
+
+### Prototipo 2.0
+
+- Se añade python como segunda plataforma generada.
+- el codigo generado ahora se organiza en directorios para su facil identificación. 
+
+
