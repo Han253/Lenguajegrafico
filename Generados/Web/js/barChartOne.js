@@ -12,7 +12,7 @@ function drawBasic() {
 	                 data.addRows([[response[i]["valor1"],response[i]["valor2"]]]);
 	             }
 	                                                                         
-	              var options = {'title':'Valores Relacionados','width':400,'height':400};
+	              var options = {legend: { position: "none" },chartArea:{width:'70%',height:'70%'},animation:{duration: 1000,easing: 'linear',startup: true}};
 	                   
 	              var chart = new google.visualization.ColumnChart(document.getElementById('barChartOne'));
 	              chart.draw(data, options);       

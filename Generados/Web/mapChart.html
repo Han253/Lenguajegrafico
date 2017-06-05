@@ -4,9 +4,35 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
    	<script src="js/properties.js"></script>
    	<script src="js/mapChart.js"></script>
+   	<style type="text/css">
+   	    /*CLASS*/
+   		.grafico{
+   			background: white;
+   			text-aling:center;
+   			width: 62%;
+   			height: 400px;
+   			margin: 10px;
+   			padding: 10px;
+   			display: inline-block;
+   		}
+   		.grafico .title{
+   			margin: 5px;
+   			font-family: Roboto, serif;
+   			text-align: center;
+   			color: rgb(32, 33, 33);
+   		}
+   		/*IDS*/
+   		#mapChart{
+   			width: 62%;
+   		    height: 240px;
+   		    position: absolute;
+   		}	   		
+   </style> 
   </head>
-
   <body>
-    <div id="mapChart" style="width: 800px; height: 600px"></div>
+    <div class="grafico">
+    	    	<div class="title">Area Metropolitana Lucho WN</div>
+    	      	<div id="mapChart"></div>
+    </div>
   </body>
 </html>

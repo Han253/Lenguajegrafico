@@ -1,0 +1,74 @@
+<html>
+<head>
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="js/properties.js"></script>
+	<script src="js/tabla.js"></script>
+	<style type="text/css">
+	
+	/*This code block delete default style in google table chart*/
+	table.google-visualization-table-table .google-visualization-table-th, table.google-visualization-table-table .google-visualization-table-td {
+	    color: black;
+		background-image: initial;
+		background-repeat: initial;
+		background-position: initial;
+		-webkit-border-radius: initial;
+		-moz-border-radius: initial;
+		border-radius: initial;
+		border-style: initial;
+		border-width: initial;
+		border-color: initial;
+		background-color: initial;
+		text-align: center;
+		padding: 5px;
+	
+	}
+	
+	/*CLASS*/
+	.grafico{
+		background: white;
+		text-aling:center;
+		width: 30%;
+		height: 400px;
+		margin: 10px;
+		padding: 10px;
+		display: inline-block;
+	}
+	.grafico .title{
+		margin: 5px;
+		font-size: 30px;
+		font-family: Roboto, serif;
+		text-align: center;
+		color: rgb(32, 33, 33);
+	}
+	
+	.headerTable{
+		background-color: #1D7B9D;	
+		color: white;
+	}
+	
+	.rowTable{
+		background-color: #C5DEE6;
+	}
+	
+	.rowTable:hover{
+	    background-color: #66AEC9;
+	}
+	
+	/*IDS*/
+	#tabla{
+		position: absolute;
+		z-index: auto;
+		padding: 5px;
+		height: 200px;
+		width: 28%;
+	}	   		
+	</style> 
+</head>
+<body>
+	<div class="grafico">
+		<div class="title">hola mundo</div>
+		<div id="tabla"></div>
+	</div>
+</body>
+</html>	

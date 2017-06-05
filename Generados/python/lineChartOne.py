@@ -15,7 +15,7 @@ for i in response:
 	valor2.append(i["valor2"])
 
 fig, ax = plt.subplots()
-ax.bar(valor1,valor2)
+ax.plot(valor1,valor2)
 ax.set_title('Valores Relacionados grafico Linea')
 plt.show()
 

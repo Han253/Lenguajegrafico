@@ -1,12 +1,11 @@
-
 //Pie chart one description
 PieChart pieChartOne {
-	Title String title="Titulo grafico de torta"
+	Title String title="Producto Interno Bruto"
 	dataOne
 }
 
 //bar chart one description
-ColumnChart columnChartOne{
+BarChart barChartOne{
 	Title String title="Valores Relacionados"
 	dataTwo
 }
@@ -19,12 +18,27 @@ LineChart lineChartOne{
 }
 
 
-
 //Map chart one description
-Map mapChart{
-	Title String title="TituloMapa"
+MapChart mapChart{
+	Title String title="Area Metropolitana Lucho WN"
 	dataTree
 }
+
+TableChart tabla{
+	Title String title="hola mundo"
+	dataTable
+}
+
+DashBoard dash{
+	Title String titulo="Paises Latinoamericanos"
+	lineChartOne
+	mapChart
+	tabla	
+	pieChartOne
+	barChartOne
+}
+
+
 
 //Tuple 1 description and origin data
 Tuple1 dataOne{
@@ -46,12 +60,13 @@ Tuple3 dataTree{
 	String nombre
 }
 
-//DashBoard description
-DashBoard dashboard{
-	pieChartOne
-	lineChartOne
-	mapChart
+Tuple4 dataTable{
+	String nombre
+	Number valor1
 }
+
+
+
 
 
 

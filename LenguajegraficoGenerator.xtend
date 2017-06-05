@@ -9,10 +9,12 @@ import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
 import org.eclipse.xtext.naming.IQualifiedNameProvider
 import javax.inject.Inject
+import org.uis.lenguajegrafico.lenguajegrafico.Chart
 import org.uis.lenguajegrafico.lenguajegrafico.PieChart
 import org.uis.lenguajegrafico.lenguajegrafico.BarChart
-import org.uis.lenguajegrafico.lenguajegrafico.Map
 import org.uis.lenguajegrafico.lenguajegrafico.LineChart
+import org.uis.lenguajegrafico.lenguajegrafico.MapChart
+import org.uis.lenguajegrafico.lenguajegrafico.TableChart
 import org.uis.lenguajegrafico.lenguajegrafico.Text
 import org.uis.lenguajegrafico.lenguajegrafico.URL
 import org.uis.lenguajegrafico.lenguajegrafico.DashBoard
@@ -76,7 +78,19 @@ class LenguajegraficoGenerator extends AbstractGenerator {
          }
          
          
-         for(e : resource.allContents.toIterable.filter(Map)){
+         for(e : resource.allContents.toIterable.filter(MapChart)){
+         	fsa.generateFile("/Web/"+
+             	 	e.fullyQualifiedName.toString("/")+".html",
+             	 	e.generateHTML)   
+            fsa.generateFile("/Web/js/"+
+             	 	e.fullyQualifiedName.toString("/")+".js",
+             	 	e.generateJS)
+            fsa.generateFile("/python/"+
+             	 	e.fullyQualifiedName.toString("/")+".py",
+             	 	e.generatePy)              
+         }
+         
+         for(e : resource.allContents.toIterable.filter(TableChart)){
          	fsa.generateFile("/Web/"+
              	 	e.fullyQualifiedName.toString("/")+".html",
              	 	e.generateHTML)   
@@ -106,12 +120,35 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	    <html>
 	       <head>
 	           <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	           <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 	           <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	           <script src="js/properties.js"></script>
 	           <script src="js/«e.name».js"></script>
+	           <style type="text/css">
+	            /*CLASS*/
+	            .grafico{
+	           		background: white;
+	           		width: 30%;
+	           		height: 260px;
+	           		min-width: 250px;
+	           		margin: 10px;
+	           		padding: 10px;
+	           		display: inline-block;
+	           	}
+	           	
+	           	.grafico .title{
+	           		margin: 5px;
+	           		font-family: Roboto, serif;
+	           		text-align: center;
+	               color: rgb(32, 33, 33);
+	           	}
+	           </style>
 	       </head>
 	       <body>
-	         <div id="«e.name»"></div>
+	         <div class="grafico">
+	         	    <div class="title">«e.title.getTitle»</div>
+	         		<div id="«e.name»"></div>
+	         </div>
 	       </body>
 	    </html>
 	'''
@@ -122,9 +159,9 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	  */
 	def generateJS(PieChart e)'''
 		google.charts.load('current', {'packages':['corechart']});
-		google.charts.setOnLoadCallback(drawChart);
+		google.charts.setOnLoadCallback(drawChart«e.name»);
 					                  
-		function drawChart() {
+		function drawChart«e.name»() {
 				// Data table 
 				var data = new google.visualization.DataTable();
 				data.addColumn('string', '«e.tuple.label.name»');
@@ -135,9 +172,7 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 					              data.addRows([[response[i]["«e.tuple.label.name»"],response[i]["«e.tuple.value.name»"]]]);
 					      }
 					                            	                                      
-					       var options = {'title':«e.title.getText»
-					       ,'width':400
-					       ,'height':300};
+				var options = {chartArea:{width:'90%',height:'100%'},colors:['#378ED1','#3CAB65','#904C9F','#B7344C','#B734B2']};
 					                          
 				// Instantiate and draw our chart, passing in some options.
 				var chart = new google.visualization.PieChart(document.getElementById('«e.name»'));
@@ -184,12 +219,32 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	        <script src="js/properties.js"></script>
 	        <script src="js/«e.name».js"></script>
-	     </head>
-	   
-	     <body>
-	       <!--Div that will hold the pie chart-->
-	       <div id="«e.name»"></div>
-	     </body>
+	        <style type="text/css">
+	            /*CLASS*/
+	        	.grafico{
+	        		background: white;
+	        		width: 30%;
+	        		height: 260px;
+	        		min-width: 250px;
+	        		margin: 10px;
+	        		padding: 10px;
+	        		display: inline-block;
+	        	}
+	        	           	
+	        	.grafico .title{
+	        		margin: 5px;
+	        		font-family: Roboto, serif;
+	        		text-align: center;
+	        		color: rgb(32, 33, 33);
+	        	}
+	       </style>
+	   </head>	   
+	   <body>
+	       <div class="grafico">
+	       	    <div class="title">«e.title.getTitle»</div>
+	       	    <div id="«e.name»"></div>
+	       </div>
+	   </body>
 	   </html>
 	'''
 	def generateJS(BarChart e)'''
@@ -207,7 +262,7 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 				                 data.addRows([[response[i]["«e.tuple.value1.name»"],response[i]["«e.tuple.value2.name»"]]]);
 				             }
 				                                                                         
-				              var options = {'title':«e.title.getText»,'width':400,'height':400};
+				              var options = {legend: { position: "none" },chartArea:{width:'70%',height:'70%'},animation:{duration: 1000,easing: 'linear',startup: true}};
 				                   
 				              var chart = new google.visualization.ColumnChart(document.getElementById('«e.name»'));
 				              chart.draw(data, options);       
@@ -232,7 +287,7 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 		«e.tuple.value2.name».append(i["«e.tuple.value2.name»"])
 	
 	fig, ax = plt.subplots()
-	ax.plot(«e.tuple.value1.name»,«e.tuple.value2.name»)
+	ax.bar(«e.tuple.value1.name»,«e.tuple.value2.name»)
 	ax.set_title(«e.title.getText»)
 	plt.show()
 	
@@ -245,12 +300,33 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	      <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 	      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	      <script src="js/properties.js"></script>
-	      <script src="js/«e.name».js"></script>  
-	      </head>
-	      <body>
-	         <div id="«e.name»"></div>
-	         </body>
-	      </html>
+	      <script src="js/«e.name».js"></script> 
+	      <style type="text/css">
+	            /*CLASS*/
+	      		.grafico{
+	      	    	background: white;
+	      	        width: 30%;
+	      	        height: 260px;
+	      	        min-width: 250px;
+	      	        margin: 10px;
+	      	        padding: 10px;
+	      	        display: inline-block;
+	      	    }
+	      	        	           	
+	      	    .grafico .title{
+	      	        margin: 5px;
+	      	        font-family: Roboto, serif;
+	      	        text-align: center;
+	      	        color: rgb(32, 33, 33);
+	      	    }
+	      </style> 
+	 </head>
+	 <body>
+	    <div class="grafico">
+	    	<div class="title">«e.title.getTitle»</div>
+	      	<div id="«e.name»"></div>
+	    </div>
+	 </html>
 	'''	
 	def generateJS(LineChart e)'''
 		 google.charts.load('current', {'packages':['corechart']});
@@ -265,7 +341,8 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 		            	  for(var i in response){
 		            	      data.addRows([[response[i]["«e.tuple.value1.name»"],response[i]["«e.tuple.value2.name»"]]]);
 		            	  }
-		            	  var options = {'title':«e.title.getText»,'width':400,'height':400};
+		            	  
+		            	  var options = {legend: { position: "none" },chartArea:{width:'70%',height:'70%'},colors:['#B7344C'],animation:{duration: 1000,easing: 'linear',startup: true}};
 		            	  var chart = new google.visualization.LineChart(document.getElementById('«e.name»'));
 		            	  chart.draw(data, options);       
 		            	   }); //END getJSON
@@ -289,7 +366,7 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 		«e.tuple.value2.name».append(i["«e.tuple.value2.name»"])
 	
 	fig, ax = plt.subplots()
-	ax.bar(«e.tuple.value1.name»,«e.tuple.value2.name»)
+	ax.plot(«e.tuple.value1.name»,«e.tuple.value2.name»)
 	ax.set_title(«e.title.getText»)
 	plt.show()
 	
@@ -297,23 +374,48 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	
 	
 	
-	def generateHTML(Map e)'''
+	def generateHTML(MapChart e)'''
 	<html>
 	  <head>
 	    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	   	<script src="js/properties.js"></script>
 	   	<script src="js/«e.name».js"></script>
+	   	<style type="text/css">
+	   	    /*CLASS*/
+	   		.grafico{
+	   			background: white;
+	   			text-aling:center;
+	   			width: 62%;
+	   			height: 400px;
+	   			margin: 10px;
+	   			padding: 10px;
+	   			display: inline-block;
+	   		}
+	   		.grafico .title{
+	   			margin: 5px;
+	   			font-family: Roboto, serif;
+	   			text-align: center;
+	   			color: rgb(32, 33, 33);
+	   		}
+	   		/*IDS*/
+	   		#«e.name»{
+	   			width: 62%;
+	   		    height: 240px;
+	   		    position: absolute;
+	   		}	   		
+	   </style> 
 	  </head>
-	
 	  <body>
-	    <div id="«e.name»" style="width: 800px; height: 600px"></div>
+	    <div class="grafico">
+	    	    	<div class="title">«e.title.getTitle»</div>
+	    	      	<div id="«e.name»"></div>
+	    </div>
 	  </body>
 	</html>
 	'''
-	def generateJS(Map e)'''
-	google.charts.load("current", {packages:["map"]});
-	google.charts.setOnLoadCallback(drawChart);
+	def generateJS(MapChart e)'''
+	google.charts.load('current', {'packages': ['map'], 'callback': drawChart});
 		      
 	function drawChart() {
 		      	
@@ -326,14 +428,20 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 		      for(var i in response){
 		      	  data.addRows([[response[i]["«e.tuple.value1.name»"],response[i]["«e.tuple.value2.name»"],response[i]["«e.tuple.value3.name»"]]]);
 		      }
-		      var options = {'title':«e.title.getText»};
+		      
+		      var options = { 
+		      zoomLevel: 13,
+		      showTooltip: true,
+		      showInfoWindow: true,
+		      useMapTypeControl: true};
+		      
 		      var chart = new google.visualization.Map(document.getElementById('«e.name»'));
 		      chart.draw(data, options);       
 		      }); //END getJSON	      	
 	}
 	'''
 	
-	def generatePy(Map e)'''
+	def generatePy(MapChart e)'''
 	"""
 	Map Chart Code generated - this code es generated based on DSL.
 		
@@ -384,19 +492,262 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	imagen = Image.open('%s.png' % FileName)
 	imagen
 	'''
+	def generateHTML(TableChart e)'''
+	<html>
+	<head>
+		<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<script src="js/properties.js"></script>
+		<script src="js/«e.name».js"></script>
+		<style type="text/css">
+		
+		/*This code block delete default style in google table chart*/
+		table.google-visualization-table-table .google-visualization-table-th, table.google-visualization-table-table .google-visualization-table-td {
+		    color: black;
+			background-image: initial;
+			background-repeat: initial;
+			background-position: initial;
+			-webkit-border-radius: initial;
+			-moz-border-radius: initial;
+			border-radius: initial;
+			border-style: initial;
+			border-width: initial;
+			border-color: initial;
+			background-color: initial;
+			text-align: center;
+			padding: 5px;
+		
+		}
+		
+		/*CLASS*/
+		.grafico{
+			background: white;
+			text-aling:center;
+			width: 30%;
+			height: 400px;
+			margin: 10px;
+			padding: 10px;
+			display: inline-block;
+		}
+		.grafico .title{
+			margin: 5px;
+			font-size: 30px;
+			font-family: Roboto, serif;
+			text-align: center;
+			color: rgb(32, 33, 33);
+		}
+		
+		.headerTable{
+			background-color: #1D7B9D;	
+			color: white;
+		}
+		
+		.rowTable{
+			background-color: #C5DEE6;
+		}
+		
+		.rowTable:hover{
+		    background-color: #66AEC9;
+		}
+		
+		/*IDS*/
+		#«e.name»{
+			position: absolute;
+			z-index: auto;
+			padding: 5px;
+			height: 200px;
+			width: 28%;
+		}	   		
+		</style> 
+	</head>
+	<body>
+		<div class="grafico">
+			<div class="title">«e.title.getTitle»</div>
+			<div id="«e.name»"></div>
+		</div>
+	</body>
+	</html>	
+	'''
+	
+	def generateJS(TableChart e)'''
+	google.charts.load('current', {'packages': ['table'], 'callback': drawTable});
+	
+	function drawTable() {
+		
+		var data = new google.visualization.DataTable();
+				
+		«FOR v:e.tuple.values»
+		«IF v.eClass.name=="Text"»data.addColumn('string', '«v.name»');«ENDIF»
+		«IF v.eClass.name=="Number"»data.addColumn('number', '«v.name»');«ENDIF»
+		«ENDFOR»
+		
+		$.getJSON(«e.tuple.url.getURL», function(response){
+			for(var i in response){
+				data.addRows([[«FOR v:e.tuple.values»response[i]["«v.name»"],«ENDFOR»]]);
+			}
+			
+			
+			var cssClassNames={headerCell:'headerTable',tableRow:'rowTable'};
+			var options={cssClassNames,width:'100%', height:'100%',allowHtml:true,alternatingRowStyle:false};
+			var table = new google.visualization.Table(document.getElementById('«e.name»'));
+			table.draw(data,options);      
+			 
+		}); //END getJSON	      	
+	}
+	'''
+	
+	def generatePy(TableChart e)'''
+	"""
+	Pie Chart Code generated - this code es generated based on DSL.
+	
+	Autor: Henry Jimenez - Maria Fernanda Guerrero
+	Version: 24/05/2017
+	
+	"""
+	from urllib.request import urlopen
+	import matplotlib.pyplot as plt
+	import pandas as pd
+	import json
+	
+	
+	URL="«e.tuple.url.getURLforPython»"
+	response=json.load(urlopen(URL))
+	
+	pd.DataFrame(response)
+	'''
+	
 	
 	def compileHTML(DashBoard e)'''
 	  <html>
 	  <head>
+	  	<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 	  	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 	  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	  	<script src="js/properties.js"></script>	  	
+	  	<script src="js/properties.js"></script>	
+	  	«FOR chart:e.charts»
+	  	<script src="js/«chart.name».js"></script>
+	  	«ENDFOR»  	
+	  
+	  	<style type="text/css">
+	    	
+	    	/*General Labels*/
+	    	body{
+	    		margin: 0px;
+	    		background: #CDCDCD;
+	    	    text-align: center;
+	    	}
+	    	
+	    	/*This code block delete default style in google table chart*/
+	    	table.google-visualization-table-table .google-visualization-table-th, table.google-visualization-table-table .google-visualization-table-td {
+	    	    color: black;
+	    		background-image: initial;
+	    		background-repeat: initial;
+	    		background-position: initial;
+	    		-webkit-border-radius: initial;
+	    		-moz-border-radius: initial;
+	    		border-radius: initial;
+	    		border-style: initial;
+	    		border-width: initial;
+	    		border-color: initial;
+	    		background-color: initial;
+	    		text-align: center;
+	    		padding: 5px;
+	    	
+	    	}    	
+	    		 
+	        /*CLASS*/   	
+	    	.headerTable{
+	    		background-color: #1D7B9D;	
+	    		color: white;
+	    	}
+	    	
+	    	.rowTable{
+	    		background-color: #C5DEE6;
+	    	}
+	    	
+	    	.rowTable:hover{
+	    	    background-color: #66AEC9;
+	    	}
+	    	
+	    	.grafico_sencillo{
+	    		background: white;
+	    		min-width: 250px;
+	    		width: 30%;
+	    		height: 260px;
+	    		margin: 10px;
+	    		padding: 10px;
+	    		display: inline-block;
+	    	}
+	    	
+	    	.grafico_doble{
+	    		background: white;
+	    		width: 62.5%;
+	    		height: 260px;
+	    		margin: 10px;
+	    		padding: 10px;
+	    		display: inline-block;
+	    	}
+	    	
+	    	.title{
+	    		margin: 5px;
+	    		font-family: Roboto, serif;
+	    		text-align: center;
+	    	    color: rgb(32, 33, 33);
+	    	}
+	    	
+	    	/*IDS*/
+	    	#table_div{
+	    		position: absolute;
+	    		z-index: auto;
+	    		padding: 5px;
+	    		height: 200px;
+	    		width: 28%;
+	    	}
+	    		    	
+	    	#title{
+	    		width: 100%;
+	    		height: 50px;
+	    		line-height: 50px; 
+	    		text-align: center;
+	    		font-size: 28px;
+	    		vertical-align: middle;
+	    		color: white;
+	    		font-family: Roboto, serif;
+	    		background: #154061	    		    	
+	    	}
+	    </style>  
 	  </head>
 	  <body>
-	    
+	    <div id="Title">«e.title.getTitle»</div>
+	  	«FOR chart:e.charts»
+	  	«chart.getChartBody»
+	  	«ENDFOR» 	    
 	  </body>
 	  </html>
 	'''
+	
+	def getChartBody(Chart c)'''
+	«IF c.eClass.name=="PieChart" || c.eClass.name== "BarChart"|| c.eClass.name== "LineChart"»
+	<div class="grafico_sencillo">
+		<div class="title">«c.title.getTitle»</div>
+		<div id="«c.name»"></div>
+	</div>	
+	«ENDIF»
+	«IF c.eClass.name=="MapChart"»
+	<div class="grafico_doble">
+		<div class="title">«c.title.getTitle»</div>
+		<div id="«c.name»" style="width:60%; height: 230px; position: absolute;"></div>
+	</div>	
+	«ENDIF»
+	«IF c.eClass.name=="TableChart"»
+	<div class="grafico_sencillo">
+		<div class="title">«c.title.getTitle»</div>
+		<div id="«c.name»" style="position: absolute; z-index: auto; padding: 5px; height: 200px; width: 28%;"></div>
+	</div>	
+	«ENDIF»
+	'''
+	
+	def getTitle(Text t)'''«IF t !== null && t.value !== null»«t.value»«ELSE»Title«ENDIF»'''
 	
 	def getText(Text t)'''«IF t !== null && t.value !== null»'«t.value»'«ELSE»'no defined'«ENDIF»'''
 	

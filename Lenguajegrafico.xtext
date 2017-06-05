@@ -9,8 +9,17 @@ Element:
     Chart | Tuple | DashBoard | Datatype;
 
 Datatype:
-	Text | Number | URL
+	Text | Number
 ;
+
+Chart:
+	PieChart | LineChart | BarChart | MapChart | TableChart
+;
+
+Tuple:
+	Tuple1 | Tuple2	| Tuple3 | Tuple4
+;
+
 
 //DataType
 terminal DOUBLE:INT('.' INT)?;
@@ -22,7 +31,7 @@ Text:
 ;
 
 Number:
-	'number' name= ID ('=' value=DOUBLE)?
+	'Number' name= ID ('=' value=DOUBLE)?
 ;
 
 URL:
@@ -30,11 +39,7 @@ URL:
 ;
 
 
-
-Chart:
-	PieChart | LineChart | BarChart | Map
-;
-
+//Charts Available
 PieChart:
 	'PieChart' name= ID '{'
 	   ('Title' title=Text)?
@@ -56,18 +61,31 @@ LineChart:
 	 '}'
 ;
 
-Map:
-	'Map' name =ID '{'
+MapChart:
+	'MapChart' name =ID '{'
 		('Title' title=Text)?
 		(tuple=[Tuple3])
 	'}'
 ;
 
-
-Tuple:
-	Tuple1 | Tuple2	| Tuple3
+TableChart:
+	'TableChart' name=ID '{'
+		('Title' title=Text)?
+		(tuple=[Tuple4])
+	'}'
 ;
 
+DashBoard:
+	'DashBoard' name=ID '{'
+	   ('Title' title=Text)?
+	   (charts+=[Chart])+
+	'}'
+;
+
+
+
+
+//Tuples Availables
 Tuple1:
 	'Tuple1' name=ID '{'
 	     (url=URL)?
@@ -93,13 +111,15 @@ Tuple3:
 	'}'
 ;
 
-	
-	
-DashBoard:
-	'DashBoard' name=ID '{'
-	   (type+=[Chart])*
+Tuple4:
+	'Tuple4' name= ID '{'
+		(url=URL)?
+		(values+=Datatype)+
 	'}'
 ;
+
+	
+	
 
 
 

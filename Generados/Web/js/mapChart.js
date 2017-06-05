@@ -1,5 +1,4 @@
-google.charts.load("current", {packages:["map"]});
-google.charts.setOnLoadCallback(drawChart);
+google.charts.load('current', {'packages': ['map'], 'callback': drawChart});
 	      
 function drawChart() {
 	      	
@@ -12,7 +11,13 @@ $.getJSON(coordenadas, function(response){
 	      for(var i in response){
 	      	  data.addRows([[response[i]["latitud"],response[i]["longitud"],response[i]["nombre"]]]);
 	      }
-	      var options = {'title':'TituloMapa'};
+	      
+	      var options = { 
+	      zoomLevel: 13,
+	      showTooltip: true,
+	      showInfoWindow: true,
+	      useMapTypeControl: true};
+	      
 	      var chart = new google.visualization.Map(document.getElementById('mapChart'));
 	      chart.draw(data, options);       
 	      }); //END getJSON	      	

@@ -4,9 +4,30 @@
      <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
      <script src="js/properties.js"></script>
-     <script src="js/lineChartOne.js"></script>  
-     </head>
-     <body>
-        <div id="lineChartOne"></div>
-        </body>
-     </html>
+     <script src="js/lineChartOne.js"></script> 
+     <style type="text/css">
+           /*CLASS*/
+     		.grafico{
+     	    	background: white;
+     	        width: 30%;
+     	        height: 260px;
+     	        min-width: 250px;
+     	        margin: 10px;
+     	        padding: 10px;
+     	        display: inline-block;
+     	    }
+     	        	           	
+     	    .grafico .title{
+     	        margin: 5px;
+     	        font-family: Roboto, serif;
+     	        text-align: center;
+     	        color: rgb(32, 33, 33);
+     	    }
+     </style> 
+</head>
+<body>
+   <div class="grafico">
+   	<div class="title">Valores Relacionados grafico Linea</div>
+     	<div id="lineChartOne"></div>
+   </div>
+</html>

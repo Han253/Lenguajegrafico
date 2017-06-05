@@ -21,7 +21,7 @@ for i in response:
 
 fig, ax = plt.subplots()
 ax.pie(valor1, labels=nombre, autopct='%1.1f%%')
-ax.set_title('Paises Latinoamericanos')
+ax.set_title('Producto Interno Bruto')
 ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
 plt.show()  
 

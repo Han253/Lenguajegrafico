@@ -5,10 +5,30 @@
      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
      <script src="js/properties.js"></script>
      <script src="js/barChartOne.js"></script>
-  </head>
-
-  <body>
-    <!--Div that will hold the pie chart-->
-    <div id="barChartOne"></div>
-  </body>
+     <style type="text/css">
+         /*CLASS*/
+     	.grafico{
+     		background: white;
+     		width: 30%;
+     		height: 260px;
+     		min-width: 250px;
+     		margin: 10px;
+     		padding: 10px;
+     		display: inline-block;
+     	}
+     	           	
+     	.grafico .title{
+     		margin: 5px;
+     		font-family: Roboto, serif;
+     		text-align: center;
+     		color: rgb(32, 33, 33);
+     	}
+    </style>
+</head>	   
+<body>
+    <div class="grafico">
+    	    <div class="title">Valores Relacionados</div>
+    	    <div id="barChartOne"></div>
+    </div>
+</body>
 </html>
