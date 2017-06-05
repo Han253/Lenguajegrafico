@@ -26,5 +26,6 @@ Se añaden las siguientes características:
 
 - Se añade python como segunda plataforma generada.
 - el codigo generado ahora se organiza en directorios para su facil identificación. 
+- Generación de Dashboard añadida para la plataforma HTMl.
 
-
+![alt text](https://lh4.googleusercontent.com/qsxek1JiXHfwhC6M4Iqaw9LfyFObM_9zNkMjoBNefah_VnsmIpzaxw0rCYm7jWs2kNG7cPyb=w1366-h648-rw)
