@@ -1,68 +1,120 @@
 //Pie chart one description
-PieChart pieChartOne {
-	Title String title="Producto Interno Bruto"
-	dataOne
+PieChart TortaGeneral {
+	Title:"Consumo Colombiano Total (Millones)"
+	Legend.True
+	Hole.True
+	DatosTotales
+}
+
+PieChart TortaClaseBaja {
+	Title:"Consumo Colombiano Clase Baja(Millones)"
+	Legend.True
+	Hole.True
+	DatosClaseBaja
+}
+
+PieChart TortaClaseMedia {
+	Title:"Consumo Colombiano Clase Media (Millones)"
+	Legend.True
+	Hole.True
+	DatosClaseMedia
+}
+
+PieChart TortaClaseAlta {
+	Title:"Consumo Colombiano Clase Alta (Millones)"
+	Legend.True
+	Hole.True
+	DatosClaseAlta
+}
+
+PieChart TortaClaseTotal {
+	Title:"Consumo Colombiano Total (Millones)"
+	Legend.True
+	Hole.True
+	DatosClaseTotal
 }
 
 //bar chart one description
 BarChart barChartOne{
-	Title String title="Valores Relacionados"
+	Legend.False
+	Title:"Valores Relacionados"
 	dataTwo
 }
 
-
 //Line chart one description
 LineChart lineChartOne{
-	Title String title="Valores Relacionados grafico Linea"
+	Title:"Valores Relacionados grafico Linea"
 	dataTwo
 }
 
 
 //Map chart one description
 MapChart mapChart{
-	Title String title="Area Metropolitana Lucho WN"
+	Title:"Area Metropolitana Lucho WN"
 	dataTree
 }
 
 TableChart tabla{
-	Title String title="hola mundo"
+	Title:"hola mundo"
 	dataTable
 }
 
-DashBoard dash{
-	Title String titulo="Paises Latinoamericanos"
-	lineChartOne
-	mapChart
-	tabla	
-	pieChartOne
-	barChartOne
+DashBoard Dashboard{
+	Title:"Consumo Colombiano"
+	TortaGeneral
+	TortaClaseBaja
+	TortaClaseMedia
+	TortaClaseAlta
+	TortaClaseTotal
 }
 
 
 
 //Tuple 1 description and origin data
-Tuple1 dataOne{
-	  String nombre
-	  String valor1  
+Tuple1 DatosTotales{
+	  String Sector
+	  Number Total 
+}
+
+Tuple1 DatosClaseBaja{
+	  String Sector
+	  Number Cbaja
+}
+
+Tuple1 DatosClaseMedia{
+	  String Sector
+	  Number CMedia
+}
+
+Tuple1 DatosClaseAlta{
+	  String Sector
+	  Number CAlta
+}
+
+Tuple1 DatosClaseTotal{
+	URL url="http://192.168.100.13:8080/TotalColombia"
+	String Etiqueta
+	Number Valor
 }
 
 //Tuple 2 description and origin data
 Tuple2 dataTwo{
-	  String valor1
-	  String valor2
+	URL url="http://192.168.100.13:8080/paises"
+	String nombre
+	Number valor1
 }
 
 //Tuple 3 description and origin data
 Tuple3 dataTree{
 	URL coordenadas="http://192.168.100.13:8080/coordenadas"	
-	String latitud
-	String longitud
+	Number latitud
+	Number longitud
 	String nombre
 }
 
 Tuple4 dataTable{
 	String nombre
-	Number valor1
+	String valor1
 }
 
 

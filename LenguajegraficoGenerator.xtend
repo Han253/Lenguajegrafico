@@ -18,6 +18,11 @@ import org.uis.lenguajegrafico.lenguajegrafico.TableChart
 import org.uis.lenguajegrafico.lenguajegrafico.Text
 import org.uis.lenguajegrafico.lenguajegrafico.URL
 import org.uis.lenguajegrafico.lenguajegrafico.DashBoard
+import org.uis.lenguajegrafico.lenguajegrafico.Title
+import org.uis.lenguajegrafico.lenguajegrafico.Legend
+import org.uis.lenguajegrafico.lenguajegrafico.Width
+import org.uis.lenguajegrafico.lenguajegrafico.Height
+import org.uis.lenguajegrafico.lenguajegrafico.Hole
 
 /**
  * Generates code from your model files on save.
@@ -128,8 +133,8 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	            /*CLASS*/
 	            .grafico{
 	           		background: white;
-	           		width: 30%;
-	           		height: 260px;
+	           		«IF e.features.filter(Width).size !== 0»width:«e.features.filter(Width).get(0).value»px;«ENDIF»
+	           		«IF e.features.filter(Height).size !== 0»height:«e.features.filter(Height).get(0).value»px;«ENDIF»
 	           		min-width: 250px;
 	           		margin: 10px;
 	           		padding: 10px;
@@ -140,13 +145,17 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	           		margin: 5px;
 	           		font-family: Roboto, serif;
 	           		text-align: center;
-	               color: rgb(32, 33, 33);
+	             	color: rgb(32, 33, 33);
+	           	}
+	           	#«e.name»{
+	           		«IF e.features.filter(Width).size !== 0»width:«e.features.filter(Width).get(0).value»px;«ENDIF»
+	           		«IF e.features.filter(Height).size !== 0»height:«e.features.filter(Height).get(0).value»px;«ENDIF»
 	           	}
 	           </style>
 	       </head>
 	       <body>
 	         <div class="grafico">
-	         	    <div class="title">«e.title.getTitle»</div>
+	         	    <div class="title">«IF e.features.filter(Title).size !== 0»«e.features.filter(Title).get(0).value»«ENDIF»</div>
 	         		<div id="«e.name»"></div>
 	         </div>
 	       </body>
@@ -164,15 +173,20 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 		function drawChart«e.name»() {
 				// Data table 
 				var data = new google.visualization.DataTable();
-				data.addColumn('string', '«e.tuple.label.name»');
-				data.addColumn('number', '«e.tuple.value.name»');
+				data.addColumn('string', '«e.tuple.value1.name»');
+				data.addColumn('number', '«e.tuple.value2.name»');
 					                          
 				$.getJSON(«e.tuple.url.getURL», function(response){
 					      for(var i in response){
-					              data.addRows([[response[i]["«e.tuple.label.name»"],response[i]["«e.tuple.value.name»"]]]);
+					              data.addRows([[response[i]["«e.tuple.value1.name»"],response[i]["«e.tuple.value2.name»"]]]);
 					      }
 					                            	                                      
-				var options = {chartArea:{width:'90%',height:'100%'},colors:['#378ED1','#3CAB65','#904C9F','#B7344C','#B734B2']};
+				var options = {«IF e.features.filter(Legend).size !== 0»
+				«IF e.features.filter(Legend).get(0).value == 'False'»legend:{ position:"none"},«ENDIF»«ENDIF»
+				«IF e.features.filter(Hole).size !== 0»
+				«IF e.features.filter(Hole).get(0).value == 'True'»pieHole: 0.4,«ENDIF»«ENDIF»
+				chartArea:{width:'90%',height:'100%'},
+				colors:['#378ED1','#3CAB65','#904C9F','#B7344C','#AAB929','#CE6B00','#219A94','#75AA73','#54315C','#7C1B2D','#6B6C64','#AFA318']};
 					                          
 				// Instantiate and draw our chart, passing in some options.
 				var chart = new google.visualization.PieChart(document.getElementById('«e.name»'));
@@ -194,18 +208,18 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	import matplotlib.pyplot as plt
 	import json
 	
-	«e.tuple.label.name»=[]
-	«e.tuple.value.name»=[]
+	«e.tuple.value1.name»=[]
+	«e.tuple.value2.name»=[]
 	
 	URL="«e.tuple.url.getURLforPython»"
 	response=json.load(urlopen(URL))
 	for i in response:
-	    «e.tuple.label.name».append(i["«e.tuple.label.name»"])
-	    «e.tuple.value.name».append(i["«e.tuple.value.name»"])
+	    «e.tuple.value1.name».append(i["«e.tuple.value1.name»"])
+	    «e.tuple.value2.name».append(i["«e.tuple.value2.name»"])
 	
 	fig, ax = plt.subplots()
-	ax.pie(«e.tuple.value.name», labels=«e.tuple.label.name», autopct='%1.1f%%')
-	ax.set_title(«e.title.getText»)
+	ax.pie(«e.tuple.value2.name», labels=«e.tuple.value1.name», autopct='%1.1f%%')
+	«IF e.features.filter(Title).size !== 0»ax.set_title("«e.features.filter(Title).get(0).value»")«ENDIF»	
 	ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
 	plt.show()  
 	
@@ -223,8 +237,8 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	            /*CLASS*/
 	        	.grafico{
 	        		background: white;
-	        		width: 30%;
-	        		height: 260px;
+	        		«IF e.features.filter(Width).size !== 0»width:«e.features.filter(Width).get(0).value»px;«ENDIF»
+	        		«IF e.features.filter(Height).size !== 0»height:«e.features.filter(Height).get(0).value»px;«ENDIF»
 	        		min-width: 250px;
 	        		margin: 10px;
 	        		padding: 10px;
@@ -237,11 +251,15 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	        		text-align: center;
 	        		color: rgb(32, 33, 33);
 	        	}
+	        	#«e.name»{
+	        		«IF e.features.filter(Width).size !== 0»width:«e.features.filter(Width).get(0).value»px;«ENDIF»
+	        		«IF e.features.filter(Height).size !== 0»height:«e.features.filter(Height).get(0).value»px;«ENDIF»
+	        	}
 	       </style>
 	   </head>	   
 	   <body>
 	       <div class="grafico">
-	       	    <div class="title">«e.title.getTitle»</div>
+	       	    <div class="title">«IF e.features.filter(Title).size !== 0»«e.features.filter(Title).get(0).value»«ENDIF»</div>
 	       	    <div id="«e.name»"></div>
 	       </div>
 	   </body>
@@ -254,15 +272,26 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 			function drawBasic() {
 				   
 				   var data = new google.visualization.DataTable();
+				   «IF e.tuple.value1 instanceof Text»
+				   data.addColumn('string', '«e.tuple.value1.name»');
+				   «ELSE»
 				   data.addColumn('number', '«e.tuple.value1.name»');
-				   data.addColumn('number', '«e.tuple.value2.name»');
-				                               
+				   «ENDIF»
+				   «FOR v:e.tuple.value2»
+				   data.addColumn('number', '«v.name»');
+				   «ENDFOR»                          
 				   $.getJSON(«e.tuple.url.getURL», function(response){
 				             for(var i in response){
-				                 data.addRows([[response[i]["«e.tuple.value1.name»"],response[i]["«e.tuple.value2.name»"]]]);
+				                 data.addRows([[response[i]["«e.tuple.value1.name»"]
+				                 «FOR v:e.tuple.value2»
+				                 ,response[i]["«v.name»"]				                 
+				                 «ENDFOR»	
+				                 ]]);			                 
 				             }
 				                                                                         
-				              var options = {legend: { position: "none" },chartArea:{width:'70%',height:'70%'},animation:{duration: 1000,easing: 'linear',startup: true}};
+				              var options = {«IF e.features.filter(Legend).size !== 0»
+				              «IF e.features.filter(Legend).get(0).value == 'False'»legend:{ position:"none"},«ENDIF»«ENDIF»
+				              chartArea:{width:'70%',height:'70%'},animation:{duration: 1000,easing: 'linear',startup: true}};
 				                   
 				              var chart = new google.visualization.ColumnChart(document.getElementById('«e.name»'));
 				              chart.draw(data, options);       
@@ -277,18 +306,46 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	Version: 24/05/2017
 	"""
 	
+	from urllib.request import urlopen
+	import matplotlib.pyplot as plt
+	import json
+	import numpy as np
+	
 	«e.tuple.value1.name»=[]
-	«e.tuple.value2.name»=[]
+	«FOR v:e.tuple.value2»
+	«v.name»=[]			                 
+	«ENDFOR»
+	colors=["#378ED1","#3CAB65","#904C9F","#B7344C","#AAB929","#CE6B00","#219A94"]
+	width = 0.25
+	column=0
 	
 	URL="«e.tuple.url.getURLforPython»"
 	response=json.load(urlopen(URL))
+	x = np.arange(len(response))
 	for i in response:
 		«e.tuple.value1.name».append(i["«e.tuple.value1.name»"])
-		«e.tuple.value2.name».append(i["«e.tuple.value2.name»"])
+		«FOR v:e.tuple.value2»
+		«v.name».append(i["«v.name»"])		                 
+		«ENDFOR»
+		
 	
 	fig, ax = plt.subplots()
-	ax.bar(«e.tuple.value1.name»,«e.tuple.value2.name»)
-	ax.set_title(«e.title.getText»)
+	«IF e.tuple.value1 instanceof Text»
+	«FOR v:e.tuple.value2»
+	ax.bar(x+width*column,«v.name»,width,color=colors[column])
+	column += 1
+	«ENDFOR»
+	if(column>1):	
+		plt.xticks(x+width*column/column,«e.tuple.value1.name», rotation='vertical')
+	else:
+		plt.xticks(x,«e.tuple.value1.name», rotation='vertical')
+	«ELSE»
+	«FOR v:e.tuple.value2»
+	ax.bar(«e.tuple.value1.name»+width*column,«v.name»,width,color=colors[column])
+	column += 1
+	«ENDFOR»
+	«ENDIF»
+	«IF e.features.filter(Title).size !== 0»ax.set_title("«e.features.filter(Title).get(0).value»")«ENDIF»
 	plt.show()
 	
 	'''
@@ -323,7 +380,7 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	 </head>
 	 <body>
 	    <div class="grafico">
-	    	<div class="title">«e.title.getTitle»</div>
+	    	 <div class="title">«IF e.features.filter(Title).size !== 0»«e.features.filter(Title).get(0).value»«ENDIF»</div>
 	      	<div id="«e.name»"></div>
 	    </div>
 	 </html>
@@ -334,13 +391,21 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 		 
 		 function drawChart() {
 		         var data = new google.visualization.DataTable();
+		         «IF e.tuple.value1 instanceof Text»
+		         data.addColumn('string', '«e.tuple.value1.name»');
+		         «ELSE»
 		         data.addColumn('number', '«e.tuple.value1.name»');
-		         data.addColumn('number', '«e.tuple.value2.name»');
+		         «ENDIF»
+		         «FOR v:e.tuple.value2»
+		         data.addColumn('number', '«v.name»');
+		         «ENDFOR» 
 		            
 		         $.getJSON(«e.tuple.url.getURL», function(response){
-		            	  for(var i in response){
-		            	      data.addRows([[response[i]["«e.tuple.value1.name»"],response[i]["«e.tuple.value2.name»"]]]);
-		            	  }
+		            	  data.addRows([[response[i]["«e.tuple.value1.name»"]
+		            	  				«FOR v:e.tuple.value2»
+		            	  				,response[i]["«v.name»"]				                 
+		            	  				«ENDFOR»	
+		            	   ]]);	
 		            	  
 		            	  var options = {legend: { position: "none" },chartArea:{width:'70%',height:'70%'},colors:['#B7344C'],animation:{duration: 1000,easing: 'linear',startup: true}};
 		            	  var chart = new google.visualization.LineChart(document.getElementById('«e.name»'));
@@ -356,18 +421,39 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	Version: 24/05/2017
 	"""
 	
+	from urllib.request import urlopen
+	import matplotlib.pyplot as plt
+	import json
+	import numpy as np
+	
 	«e.tuple.value1.name»=[]
-	«e.tuple.value2.name»=[]
+	«FOR v:e.tuple.value2»
+	«v.name»=[]			                 
+	«ENDFOR»
+	column=0
 	
 	URL="«e.tuple.url.getURLforPython»"
 	response=json.load(urlopen(URL))
+	x = np.arange(len(response))
 	for i in response:
 		«e.tuple.value1.name».append(i["«e.tuple.value1.name»"])
-		«e.tuple.value2.name».append(i["«e.tuple.value2.name»"])
+		«FOR v:e.tuple.value2»
+		«v.name».append(i["«v.name»"])		                 
+		«ENDFOR»
 	
-	fig, ax = plt.subplots()
-	ax.plot(«e.tuple.value1.name»,«e.tuple.value2.name»)
-	ax.set_title(«e.title.getText»)
+	«IF e.tuple.value1 instanceof Text»
+	«FOR v:e.tuple.value2»
+	ax.plot(x,«v.name»)
+	column += 1
+	«ENDFOR»	
+	plt.xticks(x,«e.tuple.value1.name», rotation='vertical')
+	«ELSE»
+	«FOR v:e.tuple.value2»
+	ax.plot(«e.tuple.value1.name»,«v.name»)
+	column += 1
+	«ENDFOR»
+	«ENDIF»
+	«IF e.features.filter(Title).size !== 0»ax.set_title("«e.features.filter(Title).get(0).value»")«ENDIF»
 	plt.show()
 	
 	'''
@@ -729,23 +815,28 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	def getChartBody(Chart c)'''
 	«IF c.eClass.name=="PieChart" || c.eClass.name== "BarChart"|| c.eClass.name== "LineChart"»
 	<div class="grafico_sencillo">
-		<div class="title">«c.title.getTitle»</div>
+		<div class="title">Title</div>
 		<div id="«c.name»"></div>
 	</div>	
 	«ENDIF»
 	«IF c.eClass.name=="MapChart"»
 	<div class="grafico_doble">
-		<div class="title">«c.title.getTitle»</div>
+		<div class="title">"Title"</div>
 		<div id="«c.name»" style="width:60%; height: 230px; position: absolute;"></div>
 	</div>	
 	«ENDIF»
 	«IF c.eClass.name=="TableChart"»
 	<div class="grafico_sencillo">
-		<div class="title">«c.title.getTitle»</div>
+		<div class="title">"Title"</div>
 		<div id="«c.name»" style="position: absolute; z-index: auto; padding: 5px; height: 200px; width: 28%;"></div>
 	</div>	
 	«ENDIF»
 	'''
+	
+	
+	
+	
+	def getTitle(Title t)'''«IF t !== null && t.value !== null»«t.value»«ELSE»Title«ENDIF»'''
 	
 	def getTitle(Text t)'''«IF t !== null && t.value !== null»«t.value»«ELSE»Title«ENDIF»'''
 	

@@ -6,7 +6,7 @@ Lenguajegrafico:
 	(elements+=Element)* ;
 
 Element:
-    Chart | Tuple | DashBoard | Datatype;
+    Chart | Tuple | DashBoard;
 
 Datatype:
 	Text | Number
@@ -20,64 +20,84 @@ Tuple:
 	Tuple1 | Tuple2	| Tuple3 | Tuple4
 ;
 
+VisualFeatures:
+	Title | Legend | Width
+;
 
-//DataType
-terminal DOUBLE:INT('.' INT)?;
-terminal BOOLEAN:('TRUE'|'FALSE');
-terminal DATE:(STRING'-'STRING'-'STRING);
 
 Text:
 	'String' name= ID ('=' value=STRING)?
 ;
 
 Number:
-	'Number' name= ID ('=' value=DOUBLE)?
+	'Number' name= ID ('=' value=INT)?
 ;
 
 URL:
 	'URL' name=ID '=' value=STRING
 ;
 
+//Visual Features
+Title:
+	'Title' ':' value=STRING
+;
+
+Legend:
+	'Legend''.'value=('True'|'False')
+;
+
+Width:
+	'Width' ':' value=INT
+;
+
+Height:
+	'Height' ':' value=INT
+;
+
+Hole:
+	'Hole''.'value=('True'|'False')
+;
+
 
 //Charts Available
 PieChart:
 	'PieChart' name= ID '{'
-	   ('Title' title=Text)?
+	   features+=(Title | Legend | Width | Height | Hole)*
 	   (tuple=[Tuple1])
 	 '}'
 ;
 
 BarChart:
 	'BarChart' name= ID '{'
-	   ('Title' title=Text)?
+	   features+=(Title | Legend | Width | Height)*
 	   (tuple=[Tuple2])
 	 '}'
 ;
 
 LineChart:
 	'LineChart' name=ID '{'
-	    ('Title' title=Text)?
-	    (tuple=[Tuple2])
+	   features+=(Title | Legend | Width | Height)*
+	   (tuple=[Tuple2])
 	 '}'
 ;
 
 MapChart:
 	'MapChart' name =ID '{'
-		('Title' title=Text)?
+		(title=Title)?
 		(tuple=[Tuple3])
 	'}'
 ;
 
 TableChart:
 	'TableChart' name=ID '{'
-		('Title' title=Text)?
+		(title=Title)?
 		(tuple=[Tuple4])
 	'}'
 ;
 
 DashBoard:
 	'DashBoard' name=ID '{'
-	   ('Title' title=Text)?
+	   (title=Title)?
 	   (charts+=[Chart])+
 	'}'
 ;
@@ -89,24 +109,24 @@ DashBoard:
 Tuple1:
 	'Tuple1' name=ID '{'
 	     (url=URL)?
-	     (label=Text)
-	     (value=Text)
+	     (value1=Text)
+	     (value2=Number)
 	'}'
 ;
 
 Tuple2:
 	'Tuple2' name=ID '{'
 	     (url=URL)?
-	     (value1=Text)
-	     (value2=Text)
+	     (value1=(Text | Number))
+	     (value2+=Number)+
 	'}'
 ;
 
 Tuple3:
 	'Tuple3' name = ID '{'
 	    (url=URL)?
-		(value1=Text)
-		(value2=Text)
+		(value1=Number)
+		(value2=Number)
 		(value3=Text)
 	'}'
 ;
