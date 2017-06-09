@@ -1,0 +1,43 @@
+
+//Tuple 1 description and origin data
+Tuple1 Hurtos{
+	  URL urlt="https://www.datos.gov.co/resource/ktrr-i26b.json?$limit=10000"
+	  String departamento
+	  Number cantidad 
+}
+
+Tuple1 HurtosSantander{
+	  URL url="https://www.datos.gov.co/resource/ktrr-i26b.json?departamento=SANTANDER"
+	  String municipio
+	  Number cantidad 
+}
+
+Tuple1 HurtosDiaColombia{
+	  URL urls="https://www.datos.gov.co/resource/ktrr-i26b.json?$limit=5000"
+	  String d_a
+	  Number cantidad 
+}
+
+Tuple1 HurtosDiaSantander{
+	  URL url="https://www.datos.gov.co/resource/ktrr-i26b.json?departamento=SANTANDER"
+	  String d_a
+	  Number cantidad 
+}
+
+Tuple1 HurtosDiaCundinamarca{
+	  URL url="https://www.datos.gov.co/resource/ktrr-i26b.json?departamento=CUNDINAMARCA"
+	  String d_a
+	  Number cantidad 
+}
+
+Tuple1 HurtosDiaAntioquia{
+	  URL url="https://www.datos.gov.co/resource/ktrr-i26b.json?departamento=ANTIOQUIA"
+	  String d_a
+	  Number cantidad 
+}
+
+Tuple2 HurtosDiaColombia{
+	  URL urls="https://www.datos.gov.co/resource/ktrr-i26b.json?$limit=5000"
+	  String d_a
+	  Number cantidad 
+}

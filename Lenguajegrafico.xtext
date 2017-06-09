@@ -83,21 +83,21 @@ LineChart:
 
 MapChart:
 	'MapChart' name =ID '{'
-		(title=Title)?
+		features+=(Title)*
 		(tuple=[Tuple3])
 	'}'
 ;
 
 TableChart:
 	'TableChart' name=ID '{'
-		(title=Title)?
+		features+=(Title)*
 		(tuple=[Tuple4])
 	'}'
 ;
 
 DashBoard:
 	'DashBoard' name=ID '{'
-	   (title=Title)?
+	   features+=(Title)*
 	   (charts+=[Chart])+
 	'}'
 ;

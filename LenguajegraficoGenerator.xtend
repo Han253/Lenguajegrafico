@@ -9,7 +9,6 @@ import org.eclipse.xtext.generator.IFileSystemAccess2
 import org.eclipse.xtext.generator.IGeneratorContext
 import org.eclipse.xtext.naming.IQualifiedNameProvider
 import javax.inject.Inject
-import org.uis.lenguajegrafico.lenguajegrafico.Chart
 import org.uis.lenguajegrafico.lenguajegrafico.PieChart
 import org.uis.lenguajegrafico.lenguajegrafico.BarChart
 import org.uis.lenguajegrafico.lenguajegrafico.LineChart
@@ -33,12 +32,14 @@ class LenguajegraficoGenerator extends AbstractGenerator {
     	
 	@Inject extension IQualifiedNameProvider
 	
-	String URLvalue = "var urlServerDefaul= 'http://192.168.100.13:8080/paises';";
+	String URLvalue = "";
 
 	override void doGenerate(Resource resource, IFileSystemAccess2 fsa, IGeneratorContext context) {
 		
-		 for(e : resource.allContents.toIterable.filter(URL)){
-         	    URLvalue=URLvalue+"var "+e.name+" = '"+e.value+"';";
+		 for(u : resource.allContents.toIterable.filter(URL)){		
+		 	if(u.name =="default" || u.name == "defecto"){
+		 		URLvalue="var urlServerDefault"+u.value+";";
+		 	} 	
          }
          
          //Generate properties file, in this file you configure the URL for the Web Service
@@ -169,18 +170,30 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	def generateJS(PieChart e)'''
 		google.charts.load('current', {'packages':['corechart']});
 		google.charts.setOnLoadCallback(drawChart«e.name»);
+		
+		//Normalice your data
+		function normaliceData(t){
+		  for(x in t){
+		    for(var j = 0; j < t.length; j++){      
+		      if(t[x][0]==t[j][0] && x != j){
+		        t[x][1]=t[x][1]+t[j][1];
+		        t.splice(j,1);
+		        j=j-1;
+		      }
+		    }
+		  };
+		}
 					                  
 		function drawChart«e.name»() {
-				// Data table 
-				var data = new google.visualization.DataTable();
-				data.addColumn('string', '«e.tuple.value1.name»');
-				data.addColumn('number', '«e.tuple.value2.name»');
+								
 					                          
 				$.getJSON(«e.tuple.url.getURL», function(response){
-					      for(var i in response){
-					              data.addRows([[response[i]["«e.tuple.value1.name»"],response[i]["«e.tuple.value2.name»"]]]);
-					      }
-					                            	                                      
+					var t=[["«e.tuple.value1.name»","«e.tuple.value2.name»"]]
+					for(var i in response){
+						t.push([response[i]["«e.tuple.value1.name»"],parseInt(response[i]["«e.tuple.value2.name»"])]);
+					}
+				normaliceData(t);
+				var data = new google.visualization.arrayToDataTable(t);
 				var options = {«IF e.features.filter(Legend).size !== 0»
 				«IF e.features.filter(Legend).get(0).value == 'False'»legend:{ position:"none"},«ENDIF»«ENDIF»
 				«IF e.features.filter(Hole).size !== 0»
@@ -190,7 +203,7 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 					                          
 				// Instantiate and draw our chart, passing in some options.
 				var chart = new google.visualization.PieChart(document.getElementById('«e.name»'));
-				chart.draw(data, options);       
+				chart.draw(data, options);
 				}); //END getJSON
 		}          
 	'''
@@ -268,34 +281,40 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	def generateJS(BarChart e)'''
 			google.charts.load('current', {packages: ['corechart', 'bar']});
 			google.charts.setOnLoadCallback(drawBasic);
-				   
+			
+			//Normalice your data
+					function normaliceData(t){
+					  for(x in t){
+					    for(var j = 0; j < t.length; j++){      
+					      if(t[x][0]==t[j][0] && x != j){
+					        t[x][1]=t[x][1]+t[j][1];
+					        t.splice(j,1);
+					        j=j-1;
+						}
+					}
+				};
+			}
+				
 			function drawBasic() {
 				   
+				   
 				   var data = new google.visualization.DataTable();
-				   «IF e.tuple.value1 instanceof Text»
-				   data.addColumn('string', '«e.tuple.value1.name»');
-				   «ELSE»
-				   data.addColumn('number', '«e.tuple.value1.name»');
-				   «ENDIF»
-				   «FOR v:e.tuple.value2»
-				   data.addColumn('number', '«v.name»');
-				   «ENDFOR»                          
+				   
 				   $.getJSON(«e.tuple.url.getURL», function(response){
+				   	 var t=[["«e.tuple.value1.name»"«FOR v:e.tuple.value2»,"«v.name»"«ENDFOR»]]
 				             for(var i in response){
-				                 data.addRows([[response[i]["«e.tuple.value1.name»"]
-				                 «FOR v:e.tuple.value2»
-				                 ,response[i]["«v.name»"]				                 
-				                 «ENDFOR»	
-				                 ]]);			                 
+				             	 t.push([response[i]["«e.tuple.value1.name»"]«FOR v:e.tuple.value2»,parseInt(response[i]["«v.name»"])«ENDFOR»]);
 				             }
-				                                                                         
-				              var options = {«IF e.features.filter(Legend).size !== 0»
-				              «IF e.features.filter(Legend).get(0).value == 'False'»legend:{ position:"none"},«ENDIF»«ENDIF»
-				              chartArea:{width:'70%',height:'70%'},animation:{duration: 1000,easing: 'linear',startup: true}};
+				             
+				     normaliceData(t);				     
+				     var data = new google.visualization.arrayToDataTable(t);                                                                  
+				     var options = {«IF e.features.filter(Legend).size !== 0»
+				     «IF e.features.filter(Legend).get(0).value == 'False'»legend:{ position:"none"},«ENDIF»«ENDIF»
+				     chartArea:{width:'70%',height:'70%'},animation:{duration: 1000,easing: 'linear',startup: true}};
 				                   
-				              var chart = new google.visualization.ColumnChart(document.getElementById('«e.name»'));
-				              chart.draw(data, options);       
-				              }); //END getJSON
+				     var chart = new google.visualization.ColumnChart(document.getElementById('«e.name»'));
+				     chart.draw(data, options);       
+				    }); //END getJSON
 			}
 	'''
 	def generatePy(BarChart e)'''
@@ -494,7 +513,7 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	  </head>
 	  <body>
 	    <div class="grafico">
-	    	    	<div class="title">«e.title.getTitle»</div>
+	    	    	<div class="title">«IF e.features.filter(Title).size !== 0»«e.features.filter(Title).get(0).value»«ENDIF»</div>
 	    	      	<div id="«e.name»"></div>
 	    </div>
 	  </body>
@@ -648,7 +667,7 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	</head>
 	<body>
 		<div class="grafico">
-			<div class="title">«e.title.getTitle»</div>
+			<div class="title">«IF e.features.filter(Title).size !== 0»«e.features.filter(Title).get(0).value»«ENDIF»</div>
 			<div id="«e.name»"></div>
 		</div>
 	</body>
@@ -804,45 +823,44 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	    </style>  
 	  </head>
 	  <body>
-	    <div id="Title">«e.title.getTitle»</div>
+	    <div id="Title">«IF e.features.filter(Title).size !== 0»«e.features.filter(Title).get(0).value»«ENDIF»</div>
 	  	«FOR chart:e.charts»
-	  	«chart.getChartBody»
+	  	«IF chart instanceof PieChart»
+	  	<div class="grafico_sencillo">
+	  			<div class="title">«IF chart.features.filter(Title).size !== 0»«chart.features.filter(Title).get(0).value»«ENDIF»</div>
+	  			<div id="«chart.name»"></div>
+	  	</div>
+	  	«ENDIF»
+	  	«IF chart instanceof BarChart»
+	  	<div class="grafico_sencillo">
+	  		<div class="title">«IF chart.features.filter(Title).size !== 0»«chart.features.filter(Title).get(0).value»«ENDIF»</div>
+	  		<div id="«chart.name»"></div>
+	  	</div>
+	  	«ENDIF»
+	  	«IF chart instanceof LineChart»
+	  	<div class="grafico_sencillo">
+	  		<div class="title">«IF chart.features.filter(Title).size !== 0»«chart.features.filter(Title).get(0).value»«ENDIF»</div>
+	  		<div id="«chart.name»"></div>
+	  	</div>
+	  	«ENDIF»
+	  	«IF chart instanceof MapChart»
+	  	<div class="grafico_doble">
+	  		<div class="title">«IF chart.features.filter(Title).size !== 0»«chart.features.filter(Title).get(0).value»«ENDIF»</div>
+	  		<div id="«chart.name»"></div>
+	  	</div>
+	  	«ENDIF»
+	  	«IF chart instanceof TableChart»
+	  	<div class="grafico_sencillo">
+	  		<div class="title">«IF chart.features.filter(Title).size !== 0»«chart.features.filter(Title).get(0).value»«ENDIF»</div>
+	  		<div id="«chart.name»" style="position: absolute; z-index: auto; padding: 5px; height: 200px; width: 28%;></div>
+	  	</div>
+	  	«ENDIF»
 	  	«ENDFOR» 	    
 	  </body>
 	  </html>
 	'''
 	
-	def getChartBody(Chart c)'''
-	«IF c.eClass.name=="PieChart" || c.eClass.name== "BarChart"|| c.eClass.name== "LineChart"»
-	<div class="grafico_sencillo">
-		<div class="title">Title</div>
-		<div id="«c.name»"></div>
-	</div>	
-	«ENDIF»
-	«IF c.eClass.name=="MapChart"»
-	<div class="grafico_doble">
-		<div class="title">"Title"</div>
-		<div id="«c.name»" style="width:60%; height: 230px; position: absolute;"></div>
-	</div>	
-	«ENDIF»
-	«IF c.eClass.name=="TableChart"»
-	<div class="grafico_sencillo">
-		<div class="title">"Title"</div>
-		<div id="«c.name»" style="position: absolute; z-index: auto; padding: 5px; height: 200px; width: 28%;"></div>
-	</div>	
-	«ENDIF»
-	'''
-	
-	
-	
-	
-	def getTitle(Title t)'''«IF t !== null && t.value !== null»«t.value»«ELSE»Title«ENDIF»'''
-	
-	def getTitle(Text t)'''«IF t !== null && t.value !== null»«t.value»«ELSE»Title«ENDIF»'''
-	
-	def getText(Text t)'''«IF t !== null && t.value !== null»'«t.value»'«ELSE»'no defined'«ENDIF»'''
-	
 	def getURLforPython(URL u)'''«IF u !== null && u.value !== null»«u.value»«ELSE»http://192.168.100.13:8080/paises«ENDIF»'''	
 	
-	def getURL(URL t)'''«IF t !== null && t.value !== null»«t.name»«ELSE»urlServerDefaul«ENDIF»'''	
+	def getURL(URL t)'''«IF t !== null && t.value !== null»"«t.value»"«ELSE»urlServerDefaul«ENDIF»'''	
 }

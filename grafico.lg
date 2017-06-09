@@ -1,121 +1,54 @@
-//Pie chart one description
-PieChart TortaGeneral {
-	Title:"Consumo Colombiano Total (Millones)"
+
+//Descripción de los datos
+PieChart HurtosColombia {
+	Title:"Hurtos en Colombia"
 	Legend.True
-	Hole.True
-	DatosTotales
+	Hurtos
 }
 
-PieChart TortaClaseBaja {
-	Title:"Consumo Colombiano Clase Baja(Millones)"
+PieChart HurtoSantander {
+	Title:"Hurtos en Santander"
 	Legend.True
-	Hole.True
-	DatosClaseBaja
+	HurtosSantander
 }
 
-PieChart TortaClaseMedia {
-	Title:"Consumo Colombiano Clase Media (Millones)"
-	Legend.True
-	Hole.True
-	DatosClaseMedia
-}
-
-PieChart TortaClaseAlta {
-	Title:"Consumo Colombiano Clase Alta (Millones)"
-	Legend.True
-	Hole.True
-	DatosClaseAlta
-}
-
-PieChart TortaClaseTotal {
-	Title:"Consumo Colombiano Total (Millones)"
-	Legend.True
-	Hole.True
-	DatosClaseTotal
-}
-
-//bar chart one description
-BarChart barChartOne{
+BarChart HurtoDia {
+	Title:"Hurtos según Dia Semana Colombia"
 	Legend.False
-	Title:"Valores Relacionados"
-	dataTwo
+	HurtosDiaColombia
 }
 
-//Line chart one description
-LineChart lineChartOne{
-	Title:"Valores Relacionados grafico Linea"
-	dataTwo
+PieChart HurtoDiaSantander {
+	Title:"Hurtos según Dia Semana Santander"
+	Legend.True
+	HurtosDiaSantander
 }
 
-
-//Map chart one description
-MapChart mapChart{
-	Title:"Area Metropolitana Lucho WN"
-	dataTree
+PieChart HurtoDiaCundinamarca {
+	Title:"Hurtos según Dia Semana Cundinamarca"
+	Legend.True
+	HurtosDiaCundinamarca
 }
 
-TableChart tabla{
-	Title:"hola mundo"
-	dataTable
+PieChart HurtoDiaAntioquia {
+	Title:"Hurtos según Dia Semana Antioquia"
+	Legend.True
+	HurtosDiaAntioquia
 }
+
 
 DashBoard Dashboard{
-	Title:"Consumo Colombiano"
-	TortaGeneral
-	TortaClaseBaja
-	TortaClaseMedia
-	TortaClaseAlta
-	TortaClaseTotal
+	Title:"Hurtos en Colombia"
+	HurtosColombia
+	HurtoSantander
+	HurtoDia
+	HurtoDiaSantander
+	HurtoDiaCundinamarca
+	HurtoDiaAntioquia
 }
 
 
 
-//Tuple 1 description and origin data
-Tuple1 DatosTotales{
-	  String Sector
-	  Number Total 
-}
-
-Tuple1 DatosClaseBaja{
-	  String Sector
-	  Number Cbaja
-}
-
-Tuple1 DatosClaseMedia{
-	  String Sector
-	  Number CMedia
-}
-
-Tuple1 DatosClaseAlta{
-	  String Sector
-	  Number CAlta
-}
-
-Tuple1 DatosClaseTotal{
-	URL url="http://192.168.100.13:8080/TotalColombia"
-	String Etiqueta
-	Number Valor
-}
-
-//Tuple 2 description and origin data
-Tuple2 dataTwo{
-	URL url="http://192.168.100.13:8080/paises"
-	String nombre
-	Number valor1
-}
-
-//Tuple 3 description and origin data
-Tuple3 dataTree{
-	URL coordenadas="http://192.168.100.13:8080/coordenadas"	
-	Number latitud
-	Number longitud
-	String nombre
-}
-
-Tuple4 dataTable{
-	String nombre
-	String valor1
-}
 
 
 
