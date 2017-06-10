@@ -31,4 +31,4 @@ Se añaden las siguientes características:
 - Propiedades Visuales añadidas
 
 
-![alt text]([url=https://flic.kr/p/VoEkX5][img]https://c1.staticflickr.com/5/4282/35043352982_95c1d07979_b.jpg[/img][/url][url=https://flic.kr/p/VoEkX5]Dash[/url] by [url=https://www.flickr.com/photos/92562689@N06/]ab1c766b06a24f5c9d3cd9c9e09ca769[/url], on Flickr)
+![alt text]https://www.flickr.com/photos/92562689@N06/35043352982/in/dateposted-public/)
