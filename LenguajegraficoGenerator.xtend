@@ -18,9 +18,9 @@ import org.uis.lenguajegrafico.lenguajegrafico.Text
 import org.uis.lenguajegrafico.lenguajegrafico.URL
 import org.uis.lenguajegrafico.lenguajegrafico.DashBoard
 import org.uis.lenguajegrafico.lenguajegrafico.Title
+import org.uis.lenguajegrafico.lenguajegrafico.Titlex
+import org.uis.lenguajegrafico.lenguajegrafico.Titley
 import org.uis.lenguajegrafico.lenguajegrafico.Legend
-import org.uis.lenguajegrafico.lenguajegrafico.Width
-import org.uis.lenguajegrafico.lenguajegrafico.Height
 import org.uis.lenguajegrafico.lenguajegrafico.Hole
 
 /**
@@ -134,8 +134,8 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	            /*CLASS*/
 	            .grafico{
 	           		background: white;
-	           		«IF e.features.filter(Width).size !== 0»width:«e.features.filter(Width).get(0).value»px;«ENDIF»
-	           		«IF e.features.filter(Height).size !== 0»height:«e.features.filter(Height).get(0).value»px;«ENDIF»
+	           		width: 50%;
+	           		height: 300px;
 	           		min-width: 250px;
 	           		margin: 10px;
 	           		padding: 10px;
@@ -149,8 +149,8 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	             	color: rgb(32, 33, 33);
 	           	}
 	           	#«e.name»{
-	           		«IF e.features.filter(Width).size !== 0»width:«e.features.filter(Width).get(0).value»px;«ENDIF»
-	           		«IF e.features.filter(Height).size !== 0»height:«e.features.filter(Height).get(0).value»px;«ENDIF»
+	           		width: 100%;
+	           		height: 100%;
 	           	}
 	           </style>
 	       </head>
@@ -198,7 +198,7 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 				«IF e.features.filter(Legend).get(0).value == 'False'»legend:{ position:"none"},«ENDIF»«ENDIF»
 				«IF e.features.filter(Hole).size !== 0»
 				«IF e.features.filter(Hole).get(0).value == 'True'»pieHole: 0.4,«ENDIF»«ENDIF»
-				chartArea:{width:'90%',height:'100%'},
+				chartArea:{width:'100%',height:'100%'},
 				colors:['#378ED1','#3CAB65','#904C9F','#B7344C','#AAB929','#CE6B00','#219A94','#75AA73','#54315C','#7C1B2D','#6B6C64','#AFA318']};
 					                          
 				// Instantiate and draw our chart, passing in some options.
@@ -211,10 +211,6 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	def generatePy(PieChart e)'''
 	"""
 	Pie Chart Code generated - this code es generated based on DSL.
-	
-	Autor: Henry Jimenez - Maria Fernanda Guerrero
-	Version: 24/05/2017
-	
 	"""
 	
 	from urllib.request import urlopen
@@ -226,22 +222,46 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	
 	URL="«e.tuple.url.getURLforPython»"
 	response=json.load(urlopen(URL))
+	
 	for i in response:
 	    «e.tuple.value1.name».append(i["«e.tuple.value1.name»"])
-	    «e.tuple.value2.name».append(i["«e.tuple.value2.name»"])
 	
+	diccionario=list(set(«e.tuple.value1.name»))
+	for i in diccionario:
+	    «e.tuple.value2.name».append(0)   
+	
+	for i in response:
+	    «e.tuple.value2.name»[diccionario.index(i["«e.tuple.value1.name»"])]+=int(i["«e.tuple.value2.name»"])
+	
+	plt.style.use('ggplot')
 	fig, ax = plt.subplots()
-	ax.pie(«e.tuple.value2.name», labels=«e.tuple.value1.name», autopct='%1.1f%%')
-	«IF e.features.filter(Title).size !== 0»ax.set_title("«e.features.filter(Title).get(0).value»")«ENDIF»	
-	ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
-	plt.show()  
 	
+	«IF e.features.filter(Hole).size !== 0»
+	«IF e.features.filter(Hole).get(0).value == 'True'»
+	centre_circle = plt.Circle((0,0),0.45,color='black', fc='white')
+	fig = plt.gcf()
+	fig.gca().add_artist(centre_circle)
+	«ENDIF»«ENDIF»
+	
+	ax.pie(«e.tuple.value2.name», labels=diccionario, autopct='%1.1f%%', startangle=90)
+	
+	«IF e.features.filter(Title).size !== 0»ax.set_title("«e.features.filter(Title).get(0).value»")«ENDIF»	
+	ax.axis('equal')
+	
+	fig_size = plt.rcParams["figure.figsize"]
+	fig_size[0] = 4 #width
+	fig_size[1] = 4 #Height
+	plt.rcParams["figure.figsize"] = fig_size
+	
+	
+	plt.show()
 	'''
 	
 	def generateHTML(BarChart e)'''
 	   <html>
 	     <head>
 	       <!--Load the AJAX API-->
+	       	<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 	        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 	        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	        <script src="js/properties.js"></script>
@@ -250,8 +270,8 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	            /*CLASS*/
 	        	.grafico{
 	        		background: white;
-	        		«IF e.features.filter(Width).size !== 0»width:«e.features.filter(Width).get(0).value»px;«ENDIF»
-	        		«IF e.features.filter(Height).size !== 0»height:«e.features.filter(Height).get(0).value»px;«ENDIF»
+	        		width: 50%;
+	        		height: 300px;
 	        		min-width: 250px;
 	        		margin: 10px;
 	        		padding: 10px;
@@ -265,8 +285,8 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	        		color: rgb(32, 33, 33);
 	        	}
 	        	#«e.name»{
-	        		«IF e.features.filter(Width).size !== 0»width:«e.features.filter(Width).get(0).value»px;«ENDIF»
-	        		«IF e.features.filter(Height).size !== 0»height:«e.features.filter(Height).get(0).value»px;«ENDIF»
+	        		width: 100%;
+	        		height: 100%;
 	        	}
 	       </style>
 	   </head>	   
@@ -280,7 +300,7 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	'''
 	def generateJS(BarChart e)'''
 			google.charts.load('current', {packages: ['corechart', 'bar']});
-			google.charts.setOnLoadCallback(drawBasic);
+			google.charts.setOnLoadCallback(drawBasic«e.name»);
 			
 			//Normalice your data
 					function normaliceData(t){
@@ -295,7 +315,7 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 				};
 			}
 				
-			function drawBasic() {
+			function drawBasic«e.name»() {
 				   
 				   
 				   var data = new google.visualization.DataTable();
@@ -310,6 +330,8 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 				     var data = new google.visualization.arrayToDataTable(t);                                                                  
 				     var options = {«IF e.features.filter(Legend).size !== 0»
 				     «IF e.features.filter(Legend).get(0).value == 'False'»legend:{ position:"none"},«ENDIF»«ENDIF»
+				     «IF e.features.filter(Titlex).size !== 0»hAxis: {title:"«e.features.filter(Titlex).get(0).value»"},«ENDIF»
+				     «IF e.features.filter(Titley).size !== 0»vAxis: {title:"«e.features.filter(Titley).get(0).value»"},«ENDIF»
 				     chartArea:{width:'70%',height:'70%'},animation:{duration: 1000,easing: 'linear',startup: true}};
 				                   
 				     var chart = new google.visualization.ColumnChart(document.getElementById('«e.name»'));
@@ -319,10 +341,7 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	'''
 	def generatePy(BarChart e)'''
 	"""
-	Column Chart Code generated - this code es generated based on DSL.
-	
-	Autor: Henry Jimenez - Maria Fernanda Guerrero
-	Version: 24/05/2017
+	Column Chart Code generated - this code es generated based on DSL.	
 	"""
 	
 	from urllib.request import urlopen
@@ -335,36 +354,61 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	«v.name»=[]			                 
 	«ENDFOR»
 	colors=["#378ED1","#3CAB65","#904C9F","#B7344C","#AAB929","#CE6B00","#219A94"]
-	width = 0.25
+	«IF e.tuple.value2.size>2»
+	width = 0.30
+	«ELSE»
+	width = 0.50
+	«ENDIF»
 	column=0
 	
 	URL="«e.tuple.url.getURLforPython»"
 	response=json.load(urlopen(URL))
-	x = np.arange(len(response))
+	
 	for i in response:
 		«e.tuple.value1.name».append(i["«e.tuple.value1.name»"])
-		«FOR v:e.tuple.value2»
-		«v.name».append(i["«v.name»"])		                 
-		«ENDFOR»
 		
+	diccionario=list(set(«e.tuple.value1.name»))
+	for i in diccionario:
+		«FOR v:e.tuple.value2»
+		«v.name».append(0)
+		«ENDFOR» 
 	
+	x = np.arange(len(«e.tuple.value1.name»))
+	
+	for i in response:
+		«FOR v:e.tuple.value2»
+		«v.name»[diccionario.index(i["«e.tuple.value1.name»"])]+=int(i["«v.name»"])
+		«ENDFOR» 
+		
+		
+	plt.style.use('ggplot')
 	fig, ax = plt.subplots()
+	
 	«IF e.tuple.value1 instanceof Text»
 	«FOR v:e.tuple.value2»
 	ax.bar(x+width*column,«v.name»,width,color=colors[column])
 	column += 1
 	«ENDFOR»
-	if(column>1):	
-		plt.xticks(x+width*column/column,«e.tuple.value1.name», rotation='vertical')
+	if(column>1):
+		plt.xticks(x+width*column/column,diccionario, rotation='vertical')
 	else:
-		plt.xticks(x,«e.tuple.value1.name», rotation='vertical')
+		plt.xticks(x+width/2,diccionario, rotation='vertical')
 	«ELSE»
 	«FOR v:e.tuple.value2»
-	ax.bar(«e.tuple.value1.name»+width*column,«v.name»,width,color=colors[column])
+	ax.bar(x+width*column,«v.name»,width,color=colors[column])
 	column += 1
 	«ENDFOR»
 	«ENDIF»
 	«IF e.features.filter(Title).size !== 0»ax.set_title("«e.features.filter(Title).get(0).value»")«ENDIF»
+	«IF e.features.filter(Titlex).size !== 0»ax.set_xlabel("«e.features.filter(Titlex).get(0).value»")«ENDIF»
+	«IF e.features.filter(Titley).size !== 0»ax.set_ylabel("«e.features.filter(Titley).get(0).value»")«ENDIF»
+	
+	plt.style.use('ggplot')
+	fig_size = plt.rcParams["figure.figsize"]
+	fig_size[0] = 4 #width
+	fig_size[1] = 4 #Height
+	plt.rcParams["figure.figsize"] = fig_size
+	
 	plt.show()
 	
 	'''

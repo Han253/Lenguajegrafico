@@ -13,7 +13,13 @@ Tuple1 HurtosSantander{
 }
 
 Tuple1 HurtosDiaColombia{
-	  URL urls="https://www.datos.gov.co/resource/ktrr-i26b.json?$limit=5000"
+	  URL urls="https://www.datos.gov.co/resource/ktrr-i26b.json?$limit=18000"
+	  String d_a
+	  Number cantidad 
+}
+
+Tuple1 HurtosPrueba{
+	  URL urls="https://www.datos.gov.co/resource/ktrr-i26b.json?$limit=20"
 	  String d_a
 	  Number cantidad 
 }
@@ -37,7 +43,7 @@ Tuple1 HurtosDiaAntioquia{
 }
 
 Tuple2 HurtosDiaColombia{
-	  URL urls="https://www.datos.gov.co/resource/ktrr-i26b.json?$limit=5000"
+	  URL urls="https://www.datos.gov.co/resource/ktrr-i26b.json?$select=d_a,count(cantidad)&$group=d_a"
 	  String d_a
-	  Number cantidad 
+	  Number count_cantidad
 }

@@ -21,7 +21,7 @@ Tuple:
 ;
 
 VisualFeatures:
-	Title | Legend | Width
+	Title | Legend 
 ;
 
 
@@ -42,16 +42,16 @@ Title:
 	'Title' ':' value=STRING
 ;
 
+Titlex:
+	'Title_x' ':' value=STRING
+;
+
+Titley:
+	'Title_y' ':' value=STRING
+;
+
 Legend:
 	'Legend''.'value=('True'|'False')
-;
-
-Width:
-	'Width' ':' value=INT
-;
-
-Height:
-	'Height' ':' value=INT
 ;
 
 Hole:
@@ -59,24 +59,26 @@ Hole:
 ;
 
 
+
+
 //Charts Available
 PieChart:
 	'PieChart' name= ID '{'
-	   features+=(Title | Legend | Width | Height | Hole)*
+	   features+=(Title | Legend | Hole)*
 	   (tuple=[Tuple1])
 	 '}'
 ;
 
 BarChart:
 	'BarChart' name= ID '{'
-	   features+=(Title | Legend | Width | Height)*
+	   features+=(Title | Legend | Titlex | Titley)*
 	   (tuple=[Tuple2])
 	 '}'
 ;
 
 LineChart:
 	'LineChart' name=ID '{'
-	   features+=(Title | Legend | Width | Height)*
+	   features+=(Title | Legend)*
 	   (tuple=[Tuple2])
 	 '}'
 ;
