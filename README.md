@@ -27,5 +27,9 @@ Se añaden las siguientes características:
 - Se añade python como segunda plataforma generada.
 - el codigo generado ahora se organiza en directorios para su facil identificación. 
 - Generación de Dashboard añadida para la plataforma HTMl.
+- Filtro de etiquetas para permitir que los graficos generados puedan ser conectados a una variedad más amplia de bases de datos.
+- Propiedades Visuales añadidas
 
-![alt text](https://www.dropbox.com/s/pqp9h7084v0jvtn/Dashboard_preview.PNG?dl=0)
+
+
+![alt text](https://flic.kr/p/VoEkX5)
