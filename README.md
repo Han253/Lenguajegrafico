@@ -31,4 +31,4 @@ Se añaden las siguientes características:
 - Propiedades Visuales añadidas
 
 
-![alt text]https://www.flickr.com/photos/92562689@N06/35043352982/in/dateposted-public/)
+![alt text](https://www.flickr.com/photos/92562689@N06/35043352982/in/dateposted-public/)
