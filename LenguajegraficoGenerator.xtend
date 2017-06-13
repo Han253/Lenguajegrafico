@@ -18,10 +18,15 @@ import org.uis.lenguajegrafico.lenguajegrafico.Text
 import org.uis.lenguajegrafico.lenguajegrafico.URL
 import org.uis.lenguajegrafico.lenguajegrafico.DashBoard
 import org.uis.lenguajegrafico.lenguajegrafico.Title
-import org.uis.lenguajegrafico.lenguajegrafico.Titlex
-import org.uis.lenguajegrafico.lenguajegrafico.Titley
+import org.uis.lenguajegrafico.lenguajegrafico.Labelx
+import org.uis.lenguajegrafico.lenguajegrafico.Labely
 import org.uis.lenguajegrafico.lenguajegrafico.Legend
 import org.uis.lenguajegrafico.lenguajegrafico.Hole
+import org.uis.lenguajegrafico.lenguajegrafico.Orientation
+import org.uis.lenguajegrafico.lenguajegrafico.Area
+import org.uis.lenguajegrafico.lenguajegrafico.ZoomLevel
+import org.uis.lenguajegrafico.lenguajegrafico.MakerType
+import org.uis.lenguajegrafico.lenguajegrafico.MapType
 
 /**
  * Generates code from your model files on save.
@@ -168,44 +173,46 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	  * e is the Pie Chart Object with contain information from Metamodel to generate file.
 	  */
 	def generateJS(PieChart e)'''
-		google.charts.load('current', {'packages':['corechart']});
-		google.charts.setOnLoadCallback(drawChart«e.name»);
+	google.charts.load('current', {'packages':['corechart']});
+	google.charts.setOnLoadCallback(drawChart«e.name»);
 		
-		//Normalice your data
-		function normaliceData(t){
-		  for(x in t){
-		    for(var j = 0; j < t.length; j++){      
-		      if(t[x][0]==t[j][0] && x != j){
-		        t[x][1]=t[x][1]+t[j][1];
-		        t.splice(j,1);
-		        j=j-1;
-		      }
-		    }
-		  };
-		}
+	//Normalice your data
+	function normaliceData(t){
+		for(x in t){
+			for(var j = 0; j < t.length; j++){      
+				if(t[x][0]==t[j][0] && x != j){
+					t[x][1]=t[x][1]+t[j][1];
+					t.splice(j,1);
+					j=j-1;
+				}
+			}
+		};
+	}
 					                  
-		function drawChart«e.name»() {
+	function drawChart«e.name»() {
 								
+	$.getJSON(«e.tuple.url.getURL», function(response){
+	
+		var t=[["«e.tuple.value1.name»","«e.tuple.value2.name»"]]
+		for(var i in response){
+			if(response[i]["«e.tuple.value1.name»"] != "-"){
+				t.push([response[i]["«e.tuple.value1.name»"],parseInt(response[i]["«e.tuple.value2.name»"])]);
+			}
+		}
+		normaliceData(t);
+		var data = new google.visualization.arrayToDataTable(t);
+		var options = {«IF e.features.filter(Legend).size !== 0»
+		«IF e.features.filter(Legend).get(0).value == 'False'»legend:{ position:"none"},«ENDIF»«ENDIF»
+		«IF e.features.filter(Hole).size !== 0»
+		«IF e.features.filter(Hole).get(0).value == 'True'»pieHole: 0.4,«ENDIF»«ENDIF»
+		chartArea:{width:'100%',height:'100%'},
+		colors:['#378ED1','#3CAB65','#904C9F','#B7344C','#AAB929','#CE6B00','#219A94','#75AA73','#54315C','#7C1B2D','#6B6C64','#AFA318']};
 					                          
-				$.getJSON(«e.tuple.url.getURL», function(response){
-					var t=[["«e.tuple.value1.name»","«e.tuple.value2.name»"]]
-					for(var i in response){
-						t.push([response[i]["«e.tuple.value1.name»"],parseInt(response[i]["«e.tuple.value2.name»"])]);
-					}
-				normaliceData(t);
-				var data = new google.visualization.arrayToDataTable(t);
-				var options = {«IF e.features.filter(Legend).size !== 0»
-				«IF e.features.filter(Legend).get(0).value == 'False'»legend:{ position:"none"},«ENDIF»«ENDIF»
-				«IF e.features.filter(Hole).size !== 0»
-				«IF e.features.filter(Hole).get(0).value == 'True'»pieHole: 0.4,«ENDIF»«ENDIF»
-				chartArea:{width:'100%',height:'100%'},
-				colors:['#378ED1','#3CAB65','#904C9F','#B7344C','#AAB929','#CE6B00','#219A94','#75AA73','#54315C','#7C1B2D','#6B6C64','#AFA318']};
-					                          
-				// Instantiate and draw our chart, passing in some options.
-				var chart = new google.visualization.PieChart(document.getElementById('«e.name»'));
-				chart.draw(data, options);
-				}); //END getJSON
-		}          
+		// Instantiate and draw our chart, passing in some options.
+		var chart = new google.visualization.PieChart(document.getElementById('«e.name»'));
+		chart.draw(data, options);
+		}); //END getJSON
+	}          
 	'''
 	
 	def generatePy(PieChart e)'''
@@ -220,7 +227,7 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	«e.tuple.value1.name»=[]
 	«e.tuple.value2.name»=[]
 	
-	URL="«e.tuple.url.getURLforPython»"
+	URL="«e.tuple.url.value»"
 	response=json.load(urlopen(URL))
 	
 	for i in response:
@@ -299,45 +306,58 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	   </html>
 	'''
 	def generateJS(BarChart e)'''
-			google.charts.load('current', {packages: ['corechart', 'bar']});
-			google.charts.setOnLoadCallback(drawBasic«e.name»);
+	google.charts.load('current', {packages: ['corechart', 'bar']});
+	google.charts.setOnLoadCallback(drawBasic«e.name»);
 			
-			//Normalice your data
-					function normaliceData(t){
-					  for(x in t){
-					    for(var j = 0; j < t.length; j++){      
-					      if(t[x][0]==t[j][0] && x != j){
-					        t[x][1]=t[x][1]+t[j][1];
-					        t.splice(j,1);
-					        j=j-1;
-						}
-					}
-				};
+	//Normalice your data
+	function normaliceData(t){
+		for(x in t){
+			for(var j = 0; j < t.length; j++){      
+				if(t[x][0]==t[j][0] && x != j){
+					t[x][1]=t[x][1]+t[j][1];
+					t.splice(j,1);
+					j=j-1;
+				}
 			}
-				
-			function drawBasic«e.name»() {
+		};
+	}
+	
+	function drawBasic«e.name»() {
 				   
 				   
-				   var data = new google.visualization.DataTable();
-				   
-				   $.getJSON(«e.tuple.url.getURL», function(response){
-				   	 var t=[["«e.tuple.value1.name»"«FOR v:e.tuple.value2»,"«v.name»"«ENDFOR»]]
-				             for(var i in response){
-				             	 t.push([response[i]["«e.tuple.value1.name»"]«FOR v:e.tuple.value2»,parseInt(response[i]["«v.name»"])«ENDFOR»]);
-				             }
+	$.getJSON(«e.tuple.url.getURL», function(response){
+		var t=[["«e.tuple.value1.name»"«FOR v:e.tuple.value2»,"«v.name»"«ENDFOR»]]
+		for(var i in response){
+			if(response[i]["«e.tuple.value1.name»"] != "-"){
+				«IF e.tuple.value1 instanceof Text»
+				t.push([response[i]["«e.tuple.value1.name»"]«FOR v:e.tuple.value2»,parseInt(response[i]["«v.name»"])«ENDFOR»]);
+				«ELSE»
+				t.push([parseInt(response[i]["«e.tuple.value1.name»"])«FOR v:e.tuple.value2»,parseInt(response[i]["«v.name»"])«ENDFOR»]);
+				«ENDIF»
+			}
+		}
 				             
-				     normaliceData(t);				     
-				     var data = new google.visualization.arrayToDataTable(t);                                                                  
-				     var options = {«IF e.features.filter(Legend).size !== 0»
-				     «IF e.features.filter(Legend).get(0).value == 'False'»legend:{ position:"none"},«ENDIF»«ENDIF»
-				     «IF e.features.filter(Titlex).size !== 0»hAxis: {title:"«e.features.filter(Titlex).get(0).value»"},«ENDIF»
-				     «IF e.features.filter(Titley).size !== 0»vAxis: {title:"«e.features.filter(Titley).get(0).value»"},«ENDIF»
-				     chartArea:{width:'70%',height:'70%'},animation:{duration: 1000,easing: 'linear',startup: true}};
-				                   
-				     var chart = new google.visualization.ColumnChart(document.getElementById('«e.name»'));
-				     chart.draw(data, options);       
-				    }); //END getJSON
-			}
+		normaliceData(t);				     
+		var data = new google.visualization.arrayToDataTable(t);                                                                  
+		var options = {«IF e.features.filter(Legend).size !== 0»
+		«IF e.features.filter(Legend).get(0).value == 'False'»legend:{ position:"none"},«ENDIF»«ENDIF»
+		«IF e.features.filter(Labelx).size !== 0»hAxis: {title:"«e.features.filter(Labelx).get(0).value»"},«ENDIF»
+		«IF e.features.filter(Labely).size !== 0»vAxis: {title:"«e.features.filter(Labely).get(0).value»"},«ENDIF»
+		chartArea:{width:'70%',height:'70%'},animation:{duration: 1000,easing: 'linear',startup: true}};
+				     
+		«IF e.features.filter(Orientation).size !== 0»
+		«IF e.features.filter(Orientation).get(0).value == "Vertical"»
+		var chart = new google.visualization.ColumnChart(document.getElementById('«e.name»'));
+		«ELSE»
+		var chart = new google.visualization.BarChart(document.getElementById('«e.name»'));
+		«ENDIF»
+		«ELSE»
+		var chart = new google.visualization.ColumnChart(document.getElementById('«e.name»'));
+		«ENDIF»               
+				     
+		chart.draw(data, options);       
+		}); //END getJSON
+	}
 	'''
 	def generatePy(BarChart e)'''
 	"""
@@ -349,42 +369,67 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	import json
 	import numpy as np
 	
-	«e.tuple.value1.name»=[]
-	«FOR v:e.tuple.value2»
-	«v.name»=[]			                 
-	«ENDFOR»
 	colors=["#378ED1","#3CAB65","#904C9F","#B7344C","#AAB929","#CE6B00","#219A94"]
+	column=0
 	«IF e.tuple.value2.size>2»
 	width = 0.30
 	«ELSE»
 	width = 0.50
 	«ENDIF»
-	column=0
 	
-	URL="«e.tuple.url.getURLforPython»"
+	«e.tuple.value1.name»=[]
+	«FOR v:e.tuple.value2»
+	«v.name»=[]
+	«ENDFOR»
+	
+	URL="«e.tuple.url.value»"
 	response=json.load(urlopen(URL))
 	
+	«IF e.tuple.value1 instanceof Text»
+	
 	for i in response:
-		«e.tuple.value1.name».append(i["«e.tuple.value1.name»"])
-		
+	    if i["«e.tuple.value1.name»"] != "-":
+	        «e.tuple.value1.name».append(i["«e.tuple.value1.name»"])
+	
 	diccionario=list(set(«e.tuple.value1.name»))
+	
 	for i in diccionario:
 		«FOR v:e.tuple.value2»
-		«v.name».append(0)
+	    «v.name».append(0)
 		«ENDFOR» 
 	
-	x = np.arange(len(«e.tuple.value1.name»))
+	x = np.arange(len(diccionario))
 	
 	for i in response:
 		«FOR v:e.tuple.value2»
 		«v.name»[diccionario.index(i["«e.tuple.value1.name»"])]+=int(i["«v.name»"])
 		«ENDFOR» 
-		
-		
+	
 	plt.style.use('ggplot')
 	fig, ax = plt.subplots()
 	
-	«IF e.tuple.value1 instanceof Text»
+	
+	«IF e.features.filter(Orientation).size !== 0»
+	«IF e.features.filter(Orientation).get(0).value == "Vertical"»
+	«FOR v:e.tuple.value2»
+	ax.bar(x+width*column,«v.name»,width,color=colors[column])
+	column += 1
+	«ENDFOR»
+	if(column>1):
+	    plt.xticks(x+width*column/column,diccionario, rotation='vertical')
+	else:
+	    plt.xticks(x+width/2,diccionario, rotation='vertical')
+	«ELSE»
+	«FOR v:e.tuple.value2»
+	ax.barh(x+width*column,«v.name»,width,color=colors[column])
+	column += 1
+	«ENDFOR»
+	if(column>1):
+		plt.yticks(x+width*column/column,diccionario, rotation='horizontal')
+	else:
+		plt.yticks(x+width/2,diccionario, rotation='horizontal')
+	«ENDIF»
+	«ELSE»
 	«FOR v:e.tuple.value2»
 	ax.bar(x+width*column,«v.name»,width,color=colors[column])
 	column += 1
@@ -393,19 +438,58 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 		plt.xticks(x+width*column/column,diccionario, rotation='vertical')
 	else:
 		plt.xticks(x+width/2,diccionario, rotation='vertical')
+	«ENDIF»
+	
+	«ELSE»
+	for i in response:
+	    if i["«e.tuple.value1.name»"] != "-":
+	        «e.tuple.value1.name».append(int(i["«e.tuple.value1.name»"]))
+			
+	diccionario=list(set(«e.tuple.value1.name»))
+		
+	for i in diccionario:
+		«FOR v:e.tuple.value2»
+		«v.name».append(0)
+		«ENDFOR» 
+	
+	for i in response:
+		«FOR v:e.tuple.value2»
+		«v.name»[diccionario.index(int(i["«e.tuple.value1.name»"]))]+=int(i["«v.name»"])
+		«ENDFOR» 
+	
+
+	fig, ax = plt.subplots()
+	
+	
+	«IF e.features.filter(Orientation).size !== 0»
+	«IF e.features.filter(Orientation).get(0).value == "Vertical"»
+	«FOR v:e.tuple.value2»
+	ax.bar(diccionario,«v.name»,width,color=colors[column])
+	column += 1
+	«ENDFOR»
 	«ELSE»
 	«FOR v:e.tuple.value2»
-	ax.bar(x+width*column,«v.name»,width,color=colors[column])
+	ax.barh(diccionario,«v.name»,width,color=colors[column])
 	column += 1
 	«ENDFOR»
 	«ENDIF»
+	«ELSE»
+	«FOR v:e.tuple.value2»
+	ax.bar(diccionario,«v.name»,width,color=colors[column])
+	column += 1
+	«ENDFOR»
+	«ENDIF»
+	
+	«ENDIF»
+	
+	
 	«IF e.features.filter(Title).size !== 0»ax.set_title("«e.features.filter(Title).get(0).value»")«ENDIF»
-	«IF e.features.filter(Titlex).size !== 0»ax.set_xlabel("«e.features.filter(Titlex).get(0).value»")«ENDIF»
-	«IF e.features.filter(Titley).size !== 0»ax.set_ylabel("«e.features.filter(Titley).get(0).value»")«ENDIF»
+	«IF e.features.filter(Labelx).size !== 0»ax.set_xlabel("«e.features.filter(Labelx).get(0).value»")«ENDIF»
+	«IF e.features.filter(Labely).size !== 0»ax.set_ylabel("«e.features.filter(Labely).get(0).value»")«ENDIF»
 	
 	plt.style.use('ggplot')
 	fig_size = plt.rcParams["figure.figsize"]
-	fig_size[0] = 4 #width
+	fig_size[0] = 6 #width
 	fig_size[1] = 4 #Height
 	plt.rcParams["figure.figsize"] = fig_size
 	
@@ -414,129 +498,241 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	'''
 		
 	def generateHTML(LineChart e)'''
-	 <html>
-	   <head>
-	     <!--Load the AJAX API-->
-	      <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-	      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	      <script src="js/properties.js"></script>
-	      <script src="js/«e.name».js"></script> 
-	      <style type="text/css">
-	            /*CLASS*/
-	      		.grafico{
-	      	    	background: white;
-	      	        width: 30%;
-	      	        height: 260px;
-	      	        min-width: 250px;
-	      	        margin: 10px;
-	      	        padding: 10px;
-	      	        display: inline-block;
-	      	    }
-	      	        	           	
-	      	    .grafico .title{
-	      	        margin: 5px;
-	      	        font-family: Roboto, serif;
-	      	        text-align: center;
-	      	        color: rgb(32, 33, 33);
-	      	    }
-	      </style> 
-	 </head>
-	 <body>
-	    <div class="grafico">
-	    	 <div class="title">«IF e.features.filter(Title).size !== 0»«e.features.filter(Title).get(0).value»«ENDIF»</div>
-	      	<div id="«e.name»"></div>
-	    </div>
-	 </html>
+	<html>
+	<head>
+		<!--Load the AJAX API-->
+		<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<script src="js/properties.js"></script>
+		<script src="js/«e.name».js"></script> 
+		<style type="text/css">
+			/*CLASS*/
+			.grafico{
+				background: white;
+				width: 50%;
+				height: 300px;
+				min-width: 250px;
+				margin: 10px;
+				padding: 10px;
+				display: inline-block;
+			}
+			
+			.grafico .title{
+				margin: 5px;
+				font-family: Roboto, serif;
+				text-align: center;
+				color: rgb(32, 33, 33);
+			}
+	</style> 
+	</head>
+	<body>
+	<div class="grafico">
+		<div class="title">«IF e.features.filter(Title).size !== 0»«e.features.filter(Title).get(0).value»«ENDIF»</div>
+		<div id="«e.name»"></div>
+	</div>
+	</html>
 	'''	
 	def generateJS(LineChart e)'''
-		 google.charts.load('current', {'packages':['corechart']});
-		 google.charts.setOnLoadCallback(drawChart);
-		 
-		 function drawChart() {
-		         var data = new google.visualization.DataTable();
-		         «IF e.tuple.value1 instanceof Text»
-		         data.addColumn('string', '«e.tuple.value1.name»');
-		         «ELSE»
-		         data.addColumn('number', '«e.tuple.value1.name»');
-		         «ENDIF»
-		         «FOR v:e.tuple.value2»
-		         data.addColumn('number', '«v.name»');
-		         «ENDFOR» 
-		            
-		         $.getJSON(«e.tuple.url.getURL», function(response){
-		            	  data.addRows([[response[i]["«e.tuple.value1.name»"]
-		            	  				«FOR v:e.tuple.value2»
-		            	  				,response[i]["«v.name»"]				                 
-		            	  				«ENDFOR»	
-		            	   ]]);	
-		            	  
-		            	  var options = {legend: { position: "none" },chartArea:{width:'70%',height:'70%'},colors:['#B7344C'],animation:{duration: 1000,easing: 'linear',startup: true}};
-		            	  var chart = new google.visualization.LineChart(document.getElementById('«e.name»'));
-		            	  chart.draw(data, options);       
-		            	   }); //END getJSON
-		 }  
+	google.charts.load('current', {'packages':['corechart']});
+	google.charts.setOnLoadCallback(drawChart«e.name»);
+	
+	//Normalice your data
+	function normaliceData(t){
+		for(x in t){
+			for(var j = 0; j < t.length; j++){      
+				if(t[x][0]==t[j][0] && x != j){
+					t[x][1]=t[x][1]+t[j][1];
+					t.splice(j,1);
+					j=j-1;
+				}
+			}
+		}
+	}
+	
+	function comparar(a, b) {
+	  return a[0] - b[0];
+	}
+	
+	
+	function drawChart«e.name»() {
+	
+	$.getJSON(«e.tuple.url.getURL», function(response){
+			var t=[["«e.tuple.value1.name»"«FOR v:e.tuple.value2»,"«v.name»"«ENDFOR»]]
+			for(var i in response){
+				if(response[i]["«e.tuple.value1.name»"] != "-"){
+					«IF e.tuple.value1 instanceof Text»
+					t.push([response[i]["«e.tuple.value1.name»"]«FOR v:e.tuple.value2»,parseInt(response[i]["«v.name»"])«ENDFOR»]);
+					«ELSE»
+					t.push([parseInt(response[i]["«e.tuple.value1.name»"])«FOR v:e.tuple.value2»,parseInt(response[i]["«v.name»"])«ENDFOR»]);
+					«ENDIF»
+				}
+			}
+					             
+			normaliceData(t);
+			t.sort(comparar);
+							     
+			var data = new google.visualization.arrayToDataTable(t);                                                                  
+			var options = {«IF e.features.filter(Legend).size !== 0»
+			«IF e.features.filter(Legend).get(0).value == 'False'»legend:{ position:"none"},«ENDIF»«ENDIF»
+			«IF e.features.filter(Labelx).size !== 0»hAxis: {title:"«e.features.filter(Labelx).get(0).value»"},«ENDIF»
+			«IF e.features.filter(Labely).size !== 0»vAxis: {title:"«e.features.filter(Labely).get(0).value»"},«ENDIF»
+			chartArea:{width:'70%',height:'70%'},animation:{duration: 1000,easing: 'linear',startup: true}};
+					     
+			«IF e.features.filter(Area).size !== 0»
+			«IF e.features.filter(Area).get(0).value == "True"»
+			var chart = new google.visualization.AreaChart(document.getElementById('«e.name»'));
+			«ELSE»
+			var chart = new google.visualization.LineChart(document.getElementById('«e.name»'));
+			«ENDIF»
+			«ELSE»
+			var chart = new google.visualization.LineChart(document.getElementById('«e.name»'));
+			«ENDIF»               
+					     
+			chart.draw(data, options);       
+		}); //END getJSON
+	}  
+	
 	'''
 	def generatePy(LineChart e)'''
 	"""
-	Line Chart Code generated - this code es generated based on DSL.
-	
-	Autor: Henry Jimenez - Maria Fernanda Guerrero
-	Version: 24/05/2017
+	Column Chart Code generated - this code es generated based on DSL.	
 	"""
-	
+		
 	from urllib.request import urlopen
 	import matplotlib.pyplot as plt
 	import json
 	import numpy as np
+		
+		
+	column=0
 	
 	«e.tuple.value1.name»=[]
 	«FOR v:e.tuple.value2»
-	«v.name»=[]			                 
+	«v.name»=[]
 	«ENDFOR»
-	column=0
-	
-	URL="«e.tuple.url.getURLforPython»"
+		
+	URL="«e.tuple.url.value»"
 	response=json.load(urlopen(URL))
-	x = np.arange(len(response))
-	for i in response:
-		«e.tuple.value1.name».append(i["«e.tuple.value1.name»"])
-		«FOR v:e.tuple.value2»
-		«v.name».append(i["«v.name»"])		                 
-		«ENDFOR»
-	
+		
 	«IF e.tuple.value1 instanceof Text»
+		
+	for i in response:
+	    if i["«e.tuple.value1.name»"] != "-":
+	        «e.tuple.value1.name».append(i["«e.tuple.value1.name»"])
+		
+	diccionario=list(set(«e.tuple.value1.name»))
+		
+	for i in diccionario:
+	    «FOR v:e.tuple.value2»
+		«v.name».append(0)
+		«ENDFOR» 
+		
+	x = np.arange(len(diccionario))
+		
+	for i in response:
+		«FOR v:e.tuple.value2»
+	    «v.name»[diccionario.index(i["«e.tuple.value1.name»"])]+=int(i["«v.name»"])
+		«ENDFOR» 
+		
+	plt.style.use('ggplot')
+	fig, ax = plt.subplots()
+		
+		
+	«IF e.features.filter(Area).size !== 0»
+	«IF e.features.filter(Area).get(0).value == "True"»
 	«FOR v:e.tuple.value2»
-	ax.plot(x,«v.name»)
-	column += 1
-	«ENDFOR»	
-	plt.xticks(x,«e.tuple.value1.name», rotation='vertical')
+	ax.stackplot(x,«v.name»)
+	«ENDFOR»
 	«ELSE»
 	«FOR v:e.tuple.value2»
-	ax.plot(«e.tuple.value1.name»,«v.name»)
-	column += 1
+	ax.plot(x,«v.name»)
 	«ENDFOR»
 	«ENDIF»
-	«IF e.features.filter(Title).size !== 0»ax.set_title("«e.features.filter(Title).get(0).value»")«ENDIF»
-	plt.show()
+	«ELSE»
+	«FOR v:e.tuple.value2»
+	ax.plot(x+width*column,«v.name»)
+	«ENDFOR»
+	«ENDIF»
+	plt.xticks(x,diccionario,rotation='vertical')
+	«ELSE»
+	for i in response:
+	    if i["«e.tuple.value1.name»"] != "-":
+	         «e.tuple.value1.name».append(int(i["«e.tuple.value1.name»"]))
+				
+	diccionario=list(set(«e.tuple.value1.name»))
+			
+	for i in diccionario:
+	    «FOR v:e.tuple.value2»
+	    «v.name».append(0)
+	    «ENDFOR» 
+		
+	for i in response:
+	    «FOR v:e.tuple.value2»
+	    «v.name»[diccionario.index(int(i["«e.tuple.value1.name»"]))]+=int(i["«v.name»"])
+		«ENDFOR» 
+		
 	
+	plt.style.use('ggplot')
+	fig, ax = plt.subplots()
+		
+	«IF e.features.filter(Area).size !== 0»
+	«IF e.features.filter(Area).get(0).value == "True"»
+	«FOR v:e.tuple.value2»
+	ax.stackplot(diccionario,«v.name»)
+	«ENDFOR»
+	«ELSE»
+	«FOR v:e.tuple.value2»
+	ax.plot(diccionario,«v.name»)
+	«ENDFOR»
+	«ENDIF»
+	«ELSE»
+	«FOR v:e.tuple.value2»
+	ax.plot(diccionario,«v.name»)
+	«ENDFOR»
+	«ENDIF»
+	«ENDIF»
+		
+		
+	«IF e.features.filter(Title).size !== 0»ax.set_title("«e.features.filter(Title).get(0).value»")«ENDIF»
+	«IF e.features.filter(Labelx).size !== 0»ax.set_xlabel("«e.features.filter(Labelx).get(0).value»")«ENDIF»
+	«IF e.features.filter(Labely).size !== 0»ax.set_ylabel("«e.features.filter(Labely).get(0).value»")«ENDIF»
+		
+	
+	fig_size = plt.rcParams["figure.figsize"]
+	fig_size[0] = 6 #width
+	fig_size[1] = 4 #Height
+	plt.rcParams["figure.figsize"] = fig_size
+	plt.show()
 	'''
 	
 	
 	
 	def generateHTML(MapChart e)'''
 	<html>
-	  <head>
-	    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	   	<script src="js/properties.js"></script>
-	   	<script src="js/«e.name».js"></script>
-	   	<style type="text/css">
+	<head>
+	«IF e.features.filter(MakerType).size !== 0 && e.features.filter(MakerType).get(0).value == "Group" »
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="js/properties.js"></script>
+	<script src="js/«e.name».js"></script>
+	<script async defer
+	src="https://maps.googleapis.com/maps/api/js?callback=initMap">
+	</script>
+	<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
+	«ELSE»
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="http://maps.google.com/maps/api/js"></script>
+	<script src="js/properties.js"></script>
+	<script src="js/«e.name».js"></script>
+	«ENDIF»
+	<style type="text/css">
 	   	    /*CLASS*/
 	   		.grafico{
 	   			background: white;
 	   			text-aling:center;
-	   			width: 62%;
-	   			height: 400px;
+	   			width: 70%;
+	   			height: 500px;
 	   			margin: 10px;
 	   			padding: 10px;
 	   			display: inline-block;
@@ -549,8 +745,8 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	   		}
 	   		/*IDS*/
 	   		#«e.name»{
-	   			width: 62%;
-	   		    height: 240px;
+	   			width: 70%;
+	   		    height: 500px;
 	   		    position: absolute;
 	   		}	   		
 	   </style> 
@@ -564,30 +760,147 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	</html>
 	'''
 	def generateJS(MapChart e)'''
+	
+	«IF e.features.filter(MakerType).size == 0 || e.features.filter(MakerType).get(0).value == "Normal" »
 	google.charts.load('current', {'packages': ['map'], 'callback': drawChart});
 		      
 	function drawChart() {
 		      	
 	var data = new google.visualization.DataTable();
-	data.addColumn('number', '«e.tuple.value1.name»');
-	data.addColumn('number', '«e.tuple.value2.name»');
-	data.addColumn('string', '«e.tuple.value3.name»');
 		      	
 	$.getJSON(«e.tuple.url.getURL», function(response){
-		      for(var i in response){
-		      	  data.addRows([[response[i]["«e.tuple.value1.name»"],response[i]["«e.tuple.value2.name»"],response[i]["«e.tuple.value3.name»"]]]);
-		      }
+		var t=[["«e.tuple.value1.name»","«e.tuple.value2.name»","«e.tuple.value3.name»"]]
+		for(var i in response){
+			«IF e.tuple.value3 instanceof Text»
+			t.push([parseFloat(response[i]["«e.tuple.value1.name»"]),parseFloat(response[i]["«e.tuple.value2.name»"]),response[i]["«e.tuple.value3.name»"]]);
+			«ELSE»
+			t.push([parseFloat(response[i]["«e.tuple.value1.name»"]),parseFloat(response[i]["«e.tuple.value2.name»"]),parseFloat(response[i]["«e.tuple.value3.name»"])]);
+			«ENDIF»
+		}
 		      
-		      var options = { 
-		      zoomLevel: 13,
-		      showTooltip: true,
-		      showInfoWindow: true,
-		      useMapTypeControl: true};
-		      
-		      var chart = new google.visualization.Map(document.getElementById('«e.name»'));
-		      chart.draw(data, options);       
-		      }); //END getJSON	      	
+		var options = {
+		«IF e.features.filter(ZoomLevel).size !== 0»
+		«IF e.features.filter(ZoomLevel).get(0).value <= 15» 
+		zoomLevel: «e.features.filter(ZoomLevel).get(0).value»,
+		«ELSE»
+		zoomLevel: 10,
+		«ENDIF»
+		«ELSE»
+		zoomLevel: 10,
+		«ENDIF»
+		enableScrollWheel:true,
+		showTooltip: true,
+		showInfoWindow: true,
+		«IF e.features.filter(MapType).size !== 0»
+		«IF e.features.filter(MapType).get(0).value == "general"» 
+		mapType: 'styledMap',
+		useMapTypeControl: true
+		«ELSE»
+		mapType: '«e.features.filter(MapType).get(0).value»'
+		«ENDIF»
+		«ELSE»
+		mapType: 'styledMap',
+		useMapTypeControl: true
+		«ENDIF»
+		};
+		
+		var data = new google.visualization.arrayToDataTable(t);       
+		var chart = new google.visualization.Map(document.getElementById('«e.name»'));
+		chart.draw(data, options);       
+		}); //END getJSON	      	
 	}
+	«ELSE»
+	«IF e.features.filter(MakerType).get(0).value == "MagnitudeCircle"»
+	function initialize() {
+	
+	$.getJSON(«e.tuple.url.getURL», function(response){
+	        
+	var latTotal=0.0;
+	var longTotal=0.0;
+	for(var i in response){
+	    latTotal+=parseFloat(response[i]["«e.tuple.value1.name»"]);
+	    longTotal+=parseFloat(response[i]["«e.tuple.value2.name»"]);
+	}
+	
+	var mapAttr = {
+	center: new google.maps.LatLng(latTotal/response.length,longTotal/response.length),
+	«IF e.features.filter(ZoomLevel).size == 0 || e.features.filter(ZoomLevel).get(0).value > 15»
+	zoom: 10,
+	«ELSE»
+	zoom: «e.features.filter(ZoomLevel).get(0).value»,
+	«ENDIF»
+	«IF e.features.filter(MapType).size == 0 || e.features.filter(MapType).get(0).value == "general"  || e.features.filter(MapType).get(0).value == "normal"»
+	mapTypeId: 'roadmap'
+	«ELSE»
+	mapTypeId: '«e.features.filter(MapType).get(0).value»'
+	«ENDIF»	
+	};
+	
+	var map = new google.maps.Map(document.getElementById("«e.name»"), mapAttr);
+	
+	for(var i in response){
+	
+	var center = new google.maps.LatLng(parseFloat(response[i]["«e.tuple.value1.name»"]),parseFloat(response[i]["«e.tuple.value2.name»"]));
+	var magnitude=Math.abs(response[i]["«e.tuple.value3.name»"]);
+	
+	var circle = new google.maps.Circle({
+	    center: center,
+	    map: map,
+	    radius: Math.pow(magnitude,3)*500,// IN METERS.
+	    fillColor: "#F90F0F",
+	    fillOpacity: 0.4,
+	    strokeColor: "#FFF",
+	    strokeWeight: 0
+	    });
+	}});//END GET JSON
+	}
+	google.maps.event.addDomListener(window, 'load', initialize);
+	«ELSE»
+	function initMap() {	
+	
+	// Create an array of alphabetical characters used to label the markers.
+	var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	
+	$.getJSON(«e.tuple.url.getURL», function(response){
+	
+	var latTotal=0.0;
+	var longTotal=0.0;
+	for(var i in response){
+	    latTotal+=parseFloat(response[i]["«e.tuple.value1.name»"]);
+	    longTotal+=parseFloat(response[i]["«e.tuple.value2.name»"]);
+	}
+	
+	var map = new google.maps.Map(document.getElementById('«e.name»'), {
+		«IF e.features.filter(ZoomLevel).size == 0 || e.features.filter(ZoomLevel).get(0).value > 15»
+		zoom: 7,
+		«ELSE»
+		zoom: «e.features.filter(ZoomLevel).get(0).value»,
+		«ENDIF»
+		center: new google.maps.LatLng(latTotal/response.length,longTotal/response.length)
+	});
+	
+	
+	
+	var locations = []
+	for(var i in response){
+	    locations.push({lat:parseInt(response[i]["«e.tuple.value1.name»"]), lng:parseInt(response[i]["«e.tuple.value2.name»"])});
+	}
+	
+	var markers = locations.map(function(location, i) {
+	    return new google.maps.Marker({
+	        position: location,
+	        label: labels[i % labels.length]
+	    });
+	});
+	
+	// Add a marker clusterer to manage the markers.
+	    var markerCluster = new MarkerClusterer(map, markers,
+	        {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+	});//END GET JSON
+	}
+	«ENDIF»
+	«ENDIF»
+	
 	'''
 	
 	def generatePy(MapChart e)'''
@@ -627,7 +940,7 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 		f.close()
 		
 	FileName="«e.name»"
-	URL="«e.tuple.url.getURLforPython»"
+	URL="«e.tuple.url.value»"
 	respuesta=json.load(urlopen(URL))
 		
 	StrMakers = "markers=color:blue"
@@ -759,7 +1072,7 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	import json
 	
 	
-	URL="«e.tuple.url.getURLforPython»"
+	URL="«e.tuple.url.value»"
 	response=json.load(urlopen(URL))
 	
 	pd.DataFrame(response)
@@ -903,8 +1216,6 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 	  </body>
 	  </html>
 	'''
-	
-	def getURLforPython(URL u)'''«IF u !== null && u.value !== null»«u.value»«ELSE»http://192.168.100.13:8080/paises«ENDIF»'''	
 	
 	def getURL(URL t)'''«IF t !== null && t.value !== null»"«t.value»"«ELSE»urlServerDefaul«ENDIF»'''	
 }

@@ -4,3 +4,5 @@ http://datos.bancomundial.org/pais
 
 //Example how get datas with filter.
 https://www.datos.gov.co/resource/ktrr-i26b.json?$select=d_a,count(cantidad)&$group=d_a
+
+https://www.datos.gov.co/resource/kg3n-9kvk.json?$where=magnitud_ml%3E3

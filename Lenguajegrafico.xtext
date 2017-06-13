@@ -39,23 +39,43 @@ URL:
 
 //Visual Features
 Title:
-	'Title' ':' value=STRING
+	'Title' '=' value=STRING
 ;
 
-Titlex:
-	'Title_x' ':' value=STRING
+Labelx:
+	'Label_x' '=' value=STRING
 ;
 
-Titley:
-	'Title_y' ':' value=STRING
+Labely:
+	'Label_y' '=' value=STRING
 ;
 
 Legend:
-	'Legend''.'value=('True'|'False')
+	'Legend''.'value=('True'|'False')//Default True
 ;
 
 Hole:
-	'Hole''.'value=('True'|'False')
+	'Hole''.'value=('True'|'False')//Default False
+;
+
+Orientation:
+	'Orientation''.'value=('Horizontal'|'Vertical')//Default Vertical
+;
+
+Area:
+	'Area''.'value=('True'|'False')//Default False
+;
+
+ZoomLevel:
+	'ZoomLevel''='value=(INT)//Range(0 - 15) Default 10
+;
+
+MakerType:
+	'MakerType''.'value=('Normal'| 'Group'| 'MagnitudeCircle')// Default Normal
+;
+
+MapType:
+	'MapType''.'value=('general'| 'normal'| 'terrain'| 'satellite' | 'hybrid')// Default General
 ;
 
 
@@ -64,36 +84,36 @@ Hole:
 //Charts Available
 PieChart:
 	'PieChart' name= ID '{'
-	   features+=(Title | Legend | Hole)*
-	   (tuple=[Tuple1])
+		(tuple=[Tuple1])
+	   	features+=(Title | Legend | Hole)*	   
 	 '}'
 ;
 
 BarChart:
 	'BarChart' name= ID '{'
-	   features+=(Title | Legend | Titlex | Titley)*
-	   (tuple=[Tuple2])
+		(tuple=[Tuple2])
+	   	features+=(Title | Legend | Labelx | Labely | Orientation)*	   
 	 '}'
 ;
 
 LineChart:
 	'LineChart' name=ID '{'
-	   features+=(Title | Legend)*
 	   (tuple=[Tuple2])
+	   features+=(Title | Legend | Labelx | Labely | Area)*
 	 '}'
 ;
 
 MapChart:
 	'MapChart' name =ID '{'
-		features+=(Title)*
 		(tuple=[Tuple3])
+		features+=(Title | ZoomLevel | MakerType | MapType)*		
 	'}'
 ;
 
 TableChart:
 	'TableChart' name=ID '{'
-		features+=(Title)*
 		(tuple=[Tuple4])
+		features+=(Title)*		
 	'}'
 ;
 
@@ -110,7 +130,7 @@ DashBoard:
 //Tuples Availables
 Tuple1:
 	'Tuple1' name=ID '{'
-	     (url=URL)?
+	     (url=URL)
 	     (value1=Text)
 	     (value2=Number)
 	'}'
@@ -118,7 +138,7 @@ Tuple1:
 
 Tuple2:
 	'Tuple2' name=ID '{'
-	     (url=URL)?
+	     (url=URL)
 	     (value1=(Text | Number))
 	     (value2+=Number)+
 	'}'
@@ -126,16 +146,16 @@ Tuple2:
 
 Tuple3:
 	'Tuple3' name = ID '{'
-	    (url=URL)?
+	    (url=URL)
 		(value1=Number)
 		(value2=Number)
-		(value3=Text)
+		(value3=(Text | Number))
 	'}'
 ;
 
 Tuple4:
 	'Tuple4' name= ID '{'
-		(url=URL)?
+		(url=URL)
 		(values+=Datatype)+
 	'}'
 ;
