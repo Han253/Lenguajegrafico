@@ -1,0 +1,30 @@
+Tuple1 HurtosTorta{
+	URL="https://www.datos.gov.co/resource/mjkh-xfbi.json?$where=dia!=%22-%22&$select=dia,count(_2014)&$group=dia"
+	String dia
+	Number count_2014
+}
+
+Tuple2 HurtosHora{
+	URL="https://www.datos.gov.co/resource/mjkh-xfbi.json?$select=edad,count(_2014)&$group=edad&$having=edad%20IS%20NOT%20NULL"
+	Number edad
+	Number count_2014
+}
+
+Tuple2 Prueba{
+	URL="https://api.myjson.com/bins/pdmmj"
+	Number valor1
+	Number valor2
+}
+
+Tuple3 SismosColombia{
+	URL="https://www.datos.gov.co/resource/kg3n-9kvk.json?$where=magnitud_ml%3E4.4&$select=magnitud_ml,latitud,longitud"
+	Float latitud
+	Float longitud
+	Number magnitud_ml
+}
+
+Tuple4 PrecioCombustible{
+	URL="https://www.datos.gov.co/resource/3a4x-4hwu.json?$select=producto,max(precio)&$group=producto"
+    String producto
+	Number max_precio
+}

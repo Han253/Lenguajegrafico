@@ -1,0 +1,57 @@
+CodeGeneratedTarget.Web
+NormaliceData.True
+
+
+PieChart graficoTorta{
+	HurtosTorta
+	Title="Hurtos en Colombia según el día de la semana - 2014"
+	Legend.False
+	Hole.True
+	CellSize.2x1
+}
+
+LineChart graficoLinea2{
+	Prueba
+	Title="Esto es una prueba"
+}
+
+LineChart graficoLinea {
+	HurtosHora
+	Title="Hurtos en Colombia según la Edad - 2014"
+	Label_x="Edad Victima"
+	Label_y="Cantidad de Hurtos"
+	Legend.False
+	Area.True
+	CellSize.1x2
+}
+
+BarChart graficoBarra{
+	HurtosHora
+	Title="Hurcos en Colombia según la Edad - 2014"
+	Label_x="Edad Victima"
+	Label_y="Cantidad de Hurtos"
+	Legend.False
+	CellSize.1x2
+}
+
+MapChart graficoMapa{
+ 	SismosColombia
+ 	Title="Sismos en Colombia con magnitud superior a 4.4"
+ 	ZoomLevel=5
+ 	MapType.general
+ 	MakerType.Normal
+ 	CellSize.2x2
+ }
+
+TableChart graficoTabla{
+	PrecioCombustible
+	Title="Máximo precio registrado combustibles - 2016"
+	CellSize.1x2
+}
+
+DashBoard visualizaciones{
+	graficoTorta
+	graficoLinea
+	graficoTabla	
+}
+

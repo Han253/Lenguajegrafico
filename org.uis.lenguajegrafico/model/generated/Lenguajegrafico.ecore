@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="lenguajegrafico" nsURI="http://www.uis.org/lenguajegrafico/Lenguajegrafico"
+    nsPrefix="lenguajegrafico">
+  <eClassifiers xsi:type="ecore:EClass" name="Lenguajegrafico">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="elements" upperBound="-1"
+        eType="#//Element" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Element"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Datatype">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Chart" eSuperTypes="#//Element">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="features" upperBound="-1"
+        eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Tuple" eSuperTypes="#//Element">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="url" eType="#//URL" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Text" eSuperTypes="#//Datatype"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Number" eSuperTypes="#//Datatype"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Float" eSuperTypes="#//Datatype"/>
+  <eClassifiers xsi:type="ecore:EClass" name="URL">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Title">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Labelx">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Labely">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Legend">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Hole">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Orientation">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Area">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ZoomLevel">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MakerType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MapType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CellSize">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PieChart" eSuperTypes="#//Chart">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="tuple" eType="#//Tuple1"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BarChart" eSuperTypes="#//Chart">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="tuple" eType="#//Tuple2"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="LineChart" eSuperTypes="#//Chart">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="tuple" eType="#//Tuple2"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MapChart" eSuperTypes="#//Chart">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="tuple" eType="#//Tuple3"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TableChart" eSuperTypes="#//Chart">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="tuple" eType="#//Tuple4"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DashBoard" eSuperTypes="#//Element">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="charts" unique="false"
+        upperBound="-1" eType="#//Chart"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="features" upperBound="-1"
+        eType="#//Title" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Tuple1" eSuperTypes="#//Tuple">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value1" eType="#//Text"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value2" eType="#//Number"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Tuple2" eSuperTypes="#//Tuple">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value1" eType="#//Datatype"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value2" upperBound="-1"
+        eType="#//Number" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Tuple3" eSuperTypes="#//Tuple">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value1" eType="#//Float"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value2" eType="#//Float"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value3" eType="#//Datatype"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Tuple4" eSuperTypes="#//Tuple">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="values" upperBound="-1"
+        eType="#//Datatype" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Configuration" eSuperTypes="#//Element">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CodeGeneratedTarget" eSuperTypes="#//Configuration"/>
+  <eClassifiers xsi:type="ecore:EClass" name="NormaliceData" eSuperTypes="#//Configuration"/>
+</ecore:EPackage>

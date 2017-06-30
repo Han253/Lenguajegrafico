@@ -1,0 +1,189 @@
+grammar org.uis.lenguajegrafico.Lenguajegrafico with org.eclipse.xtext.common.Terminals
+
+generate lenguajegrafico "http://www.uis.org/lenguajegrafico/Lenguajegrafico"
+
+Lenguajegrafico:
+	(elements+=Element)* ;
+
+Element:
+    Chart | Tuple | DashBoard | Configuration;
+
+Datatype:
+	Text | Number | Float
+;
+
+Chart:
+	PieChart | LineChart | BarChart | MapChart | TableChart
+;
+
+Tuple:
+	Tuple1 | Tuple2	| Tuple3 | Tuple4
+;
+
+
+//Data type
+Text:
+	'String' name= ID
+;
+
+Number:
+	'Number' name= ID
+;
+
+Float:
+	'Float'  name=ID
+;
+
+
+
+//Data Configuration
+URL:
+	'URL' '=' value=STRING
+;
+
+//Visual Features
+
+Title:
+	'Title' '=' value=STRING
+;
+
+Labelx:
+	'Label_x' '=' value=STRING
+;
+
+Labely:
+	'Label_y' '=' value=STRING
+;
+
+Legend:
+	'Legend''.'value=('True'|'False')//Default True
+;
+
+Hole:
+	'Hole''.'value=('True'|'False')//Default False
+;
+
+Orientation:
+	'Orientation''.'value=('Horizontal'|'Vertical')//Default Vertical
+;
+
+Area:
+	'Area''.'value=('True'|'False')//Default False
+;
+
+ZoomLevel:
+	'ZoomLevel''='value=(INT)//Range(0 - 15) Default 7
+;
+
+MakerType:
+	'MakerType''.'value=('Normal'| 'Group'| 'MagnitudeCircle')// Default Normal
+;
+
+MapType:
+	'MapType''.'value=('general'| 'roadmap'| 'terrain'| 'satellite' | 'hybrid')// Default General
+;
+
+CellSize:
+	'CellSize''.' value=('1x1'| '1x2'| '1x3'| '2x1' | '2x2' | '3x3')// Default 1x1
+;
+
+
+//Charts Available
+PieChart:
+	'PieChart' name= ID '{'
+		(tuple=[Tuple1])
+	   	features+=(Title | Legend | Hole | CellSize)*	   
+	 '}'
+;
+
+BarChart:
+	'BarChart' name= ID '{'
+		(tuple=[Tuple2])
+	   	features+=(Title | Legend | Labelx | Labely | Orientation | CellSize)*	   
+	 '}'
+;
+
+LineChart:
+	'LineChart' name=ID '{'
+	   (tuple=[Tuple2])
+	   features+=(Title | Legend | Labelx | Labely | Area | CellSize)*
+	 '}'
+;
+
+MapChart:
+	'MapChart' name =ID '{'
+		(tuple=[Tuple3])
+		features+=(Title | ZoomLevel | MakerType | MapType | CellSize)*		
+	'}'
+;
+
+TableChart:
+	'TableChart' name=ID '{'
+		(tuple=[Tuple4])
+		features+=(Title | CellSize)*		
+	'}'
+;
+
+DashBoard:
+	'DashBoard' name=ID '{'	   
+	   (charts+=[Chart])+
+	   features+=(Title)*
+	'}'
+;
+
+
+
+
+//Tuples Availables
+Tuple1:
+	'Tuple1' name=ID '{'
+	     (url=URL)
+	     (value1=Text) //Etiqueta | Label
+	     (value2=Number) //Valor | Value
+	'}'
+;
+
+Tuple2:
+	'Tuple2' name=ID '{'
+	     (url=URL)
+	     (value1=(Text | Number)) //Etiqueta | Label
+	     (value2+=Number)+ //Valor | Value
+	'}'
+;
+
+Tuple3:
+	'Tuple3' name = ID '{'
+	    (url=URL)
+		(value1=Float) //Latitud | Latitude
+		(value2=Float) //Longitud | Longitude
+		(value3=(Text | Number)) //Etiqueta | Label
+	'}'
+;
+
+Tuple4:
+	'Tuple4' name= ID '{'
+		(url=URL)
+		(values+=Datatype)+ // Column
+	'}'
+;
+
+//Configuration Options
+	
+Configuration:
+	CodeGeneratedTarget | NormaliceData
+;
+
+CodeGeneratedTarget:
+	'CodeGeneratedTarget''.'value=('All'| 'Web'| 'Python')// Default Normal
+;
+
+NormaliceData:
+	'NormaliceData''.'value=('True'|'False')// Default Normal
+;
+
+
+
+
+
+
+
