@@ -30,5 +30,10 @@ Se añaden las siguientes características:
 - Filtro de etiquetas para permitir que los graficos generados puedan ser conectados a una variedad más amplia de bases de datos.
 - Propiedades Visuales añadidas
 
+#### Update 30 Jun
+- Se corrigen errores en el código generado para Python
+- Se añade el atributo CellSize que permite definir las celdas que ocupa un gráfico en el Dashboard.
+- Validación para nombre único de elementos añadida, ahora no se pueden crear dos gráficos o tuplas con el mismo nombre.
+- Selección de plataforma de generación de código añadida.
+- Activar o desactivar normalización de datos.
 
-![alt text](https://www.flickr.com/photos/92562689@N06/35043352982/in/dateposted-public/)
