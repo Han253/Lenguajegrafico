@@ -55,7 +55,7 @@ public class LenguajegraficoGenerator extends AbstractGenerator {
   
   private String Targuet = "All";
   
-  private String Normalice = "False";
+  private String Normalice = "True";
   
   @Override
   public void doGenerate(final Resource resource, final IFileSystemAccess2 fsa, final IGeneratorContext context) {
@@ -3973,6 +3973,17 @@ public class LenguajegraficoGenerator extends AbstractGenerator {
             _builder.append("<div id=\"");
             String _name_4 = ((MapChart)chart_1).getName();
             _builder.append(_name_4, "\t\t");
+            _builder.append("\" class=\"t");
+            {
+              int _size_9 = IterableExtensions.size(Iterables.<CellSize>filter(((MapChart)chart_1).getFeatures(), CellSize.class));
+              boolean _tripleNotEquals_9 = (_size_9 != 0);
+              if (_tripleNotEquals_9) {
+                String _value_9 = ((CellSize[])Conversions.unwrapArray(Iterables.<CellSize>filter(((MapChart)chart_1).getFeatures(), CellSize.class), CellSize.class))[0].getValue();
+                _builder.append(_value_9, "\t\t");
+              } else {
+                _builder.append("1x1");
+              }
+            }
             _builder.append("\"></div>");
             _builder.newLineIfNotEmpty();
             _builder.append("\t");
@@ -3985,11 +3996,11 @@ public class LenguajegraficoGenerator extends AbstractGenerator {
             _builder.append("\t");
             _builder.append("<div class=\"g");
             {
-              int _size_9 = IterableExtensions.size(Iterables.<CellSize>filter(((TableChart)chart_1).getFeatures(), CellSize.class));
-              boolean _tripleNotEquals_9 = (_size_9 != 0);
-              if (_tripleNotEquals_9) {
-                String _value_9 = ((CellSize[])Conversions.unwrapArray(Iterables.<CellSize>filter(((TableChart)chart_1).getFeatures(), CellSize.class), CellSize.class))[0].getValue();
-                _builder.append(_value_9, "\t");
+              int _size_10 = IterableExtensions.size(Iterables.<CellSize>filter(((TableChart)chart_1).getFeatures(), CellSize.class));
+              boolean _tripleNotEquals_10 = (_size_10 != 0);
+              if (_tripleNotEquals_10) {
+                String _value_10 = ((CellSize[])Conversions.unwrapArray(Iterables.<CellSize>filter(((TableChart)chart_1).getFeatures(), CellSize.class), CellSize.class))[0].getValue();
+                _builder.append(_value_10, "\t");
               } else {
                 _builder.append("1x1");
               }
@@ -4000,11 +4011,11 @@ public class LenguajegraficoGenerator extends AbstractGenerator {
             _builder.append("\t");
             _builder.append("<div class=\"title\">");
             {
-              int _size_10 = IterableExtensions.size(Iterables.<Title>filter(((TableChart)chart_1).getFeatures(), Title.class));
-              boolean _tripleNotEquals_10 = (_size_10 != 0);
-              if (_tripleNotEquals_10) {
-                String _value_10 = ((Title[])Conversions.unwrapArray(Iterables.<Title>filter(((TableChart)chart_1).getFeatures(), Title.class), Title.class))[0].getValue();
-                _builder.append(_value_10, "\t\t");
+              int _size_11 = IterableExtensions.size(Iterables.<Title>filter(((TableChart)chart_1).getFeatures(), Title.class));
+              boolean _tripleNotEquals_11 = (_size_11 != 0);
+              if (_tripleNotEquals_11) {
+                String _value_11 = ((Title[])Conversions.unwrapArray(Iterables.<Title>filter(((TableChart)chart_1).getFeatures(), Title.class), Title.class))[0].getValue();
+                _builder.append(_value_11, "\t\t");
               }
             }
             _builder.append("</div>");
@@ -4016,11 +4027,11 @@ public class LenguajegraficoGenerator extends AbstractGenerator {
             _builder.append(_name_5, "\t\t");
             _builder.append("\" class=\"t");
             {
-              int _size_11 = IterableExtensions.size(Iterables.<CellSize>filter(((TableChart)chart_1).getFeatures(), CellSize.class));
-              boolean _tripleNotEquals_11 = (_size_11 != 0);
-              if (_tripleNotEquals_11) {
-                String _value_11 = ((CellSize[])Conversions.unwrapArray(Iterables.<CellSize>filter(((TableChart)chart_1).getFeatures(), CellSize.class), CellSize.class))[0].getValue();
-                _builder.append(_value_11, "\t\t");
+              int _size_12 = IterableExtensions.size(Iterables.<CellSize>filter(((TableChart)chart_1).getFeatures(), CellSize.class));
+              boolean _tripleNotEquals_12 = (_size_12 != 0);
+              if (_tripleNotEquals_12) {
+                String _value_12 = ((CellSize[])Conversions.unwrapArray(Iterables.<CellSize>filter(((TableChart)chart_1).getFeatures(), CellSize.class), CellSize.class))[0].getValue();
+                _builder.append(_value_12, "\t\t");
               } else {
                 _builder.append("1x1");
               }

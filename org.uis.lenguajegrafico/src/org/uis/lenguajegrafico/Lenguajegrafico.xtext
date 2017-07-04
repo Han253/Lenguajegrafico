@@ -178,7 +178,7 @@ CodeGeneratedTarget:
 ;
 
 NormaliceData:
-	'NormaliceData''.'value=('True'|'False')// Default Normal
+	'NormaliceData''.'value=('True'|'False')// Default False
 ;
 
 
