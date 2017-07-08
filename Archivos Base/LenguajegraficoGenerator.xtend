@@ -884,6 +884,12 @@ class LenguajegraficoGenerator extends AbstractGenerator {
 		}
 		      
 		var options = {
+		icons: {
+			default: {
+		    	normal: 'http://maps.google.com/mapfiles/ms/micons/red-dot.png',
+		    	selected: 'http://maps.google.com/mapfiles/ms/micons/blue-dot.png'
+		      }
+		},
 		«IF e.features.filter(ZoomLevel).size !== 0»
 		«IF e.features.filter(ZoomLevel).get(0).value <= 15» 
 		zoomLevel: «e.features.filter(ZoomLevel).get(0).value»,
