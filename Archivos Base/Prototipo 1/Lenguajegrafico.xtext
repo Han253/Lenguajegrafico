@@ -1,0 +1,109 @@
+grammar org.uis.lenguajegrafico.Lenguajegrafico with org.eclipse.xtext.common.Terminals
+
+generate lenguajegrafico "http://www.uis.org/lenguajegrafico/Lenguajegrafico"
+
+Lenguajegrafico:
+	(elements+=Element)* ;
+
+Element:
+    Chart | Tuple | DashBoard | Datatype;
+
+Datatype:
+	Text | Number | URL
+;
+
+//DataType
+terminal DOUBLE:INT('.' INT)?;
+terminal BOOLEAN:('TRUE'|'FALSE');
+terminal DATE:(STRING'-'STRING'-'STRING);
+
+Text:
+	'String' name= ID ('=' value=STRING)?
+;
+
+Number:
+	'number' name= ID ('=' value=DOUBLE)?
+;
+
+URL:
+	'URL' name=ID '=' value=STRING
+;
+
+
+
+Chart:
+	PieChart | LineChart | ColumnChart | Map
+;
+
+PieChart:
+	'PieChart' name= ID '{'
+	   ('Title' title=Text)?
+	   (tuple=[Tuple1])
+	 '}'
+;
+
+ColumnChart:
+	'ColumnChart' name= ID '{'
+	   ('Title' title=Text)?
+	   (tuple=[Tuple2])
+	 '}'
+;
+
+LineChart:
+	'LineChart' name=ID '{'
+	    ('Title' title=Text)?
+	    (tuple=[Tuple2])
+	 '}'
+;
+
+Map:
+	'Map' name =ID '{'
+		('Title' title=Text)?
+		(tuple=[Tuple3])
+	'}'
+;
+
+
+Tuple:
+	Tuple1 | Tuple2	| Tuple3
+;
+
+Tuple1:
+	'Tuple1' name=ID '{'
+	     (url=URL)?
+	     (label=Text)
+	     (value=Text)
+	'}'
+;
+
+Tuple2:
+	'Tuple2' name=ID '{'
+	     (url=URL)?
+	     (value1=Text)
+	     (value2=Text)
+	'}'
+;
+
+Tuple3:
+	'Tuple3' name = ID '{'
+	    (url=URL)?
+		(value1=Text)
+		(value2=Text)
+		(value3=Text)
+	'}'
+;
+
+	
+	
+DashBoard:
+	'DashBoard' name=ID '{'
+	   (type+=[Chart])*
+	'}'
+;
+	
+
+
+
+
+
+
